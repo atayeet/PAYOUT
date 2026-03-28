@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: 270414d9826159245841e262533e9420
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7974146797293071942
+    second: COP1_0
+  - first:
+      213: 6424270477455883923
+    second: COP1_1
+  - first:
+      213: -6794838301877902631
+    second: COP1_2
+  - first:
+      213: 4184918303934564035
+    second: COP1_3
+  - first:
+      213: -4933594760459175734
+    second: COP1_4
+  - first:
+      213: -4685707288773830019
+    second: COP1_5
+  - first:
+      213: 5472208324173135369
+    second: COP1_6
+  - first:
+      213: 3367885469095593227
+    second: COP1_7
+  - first:
+      213: 5988711106630064945
+    second: COP1_8
+  - first:
+      213: 6175720207102779512
+    second: COP1_9
+  - first:
+      213: -4933215142652074307
+    second: COP1_10
+  - first:
+      213: 5967175849195845650
+    second: COP1_11
+  - first:
+      213: -8303767413140426345
+    second: COP1_12
+  - first:
+      213: 3473393407737244187
+    second: COP1_13
+  - first:
+      213: 5453644643993992537
+    second: COP1_14
+  - first:
+      213: -65728085987747011
+    second: COP1_15
+  - first:
+      213: 5732659399379888398
+    second: COP1_16
+  - first:
+      213: -5863551313557328891
+    second: COP1_17
+  - first:
+      213: 7667121849937019668
+    second: COP1_18
+  - first:
+      213: -6836648022119432744
+    second: COP1_19
+  - first:
+      213: 4169558994885415997
+    second: COP1_20
+  - first:
+      213: -5385623200482022024
+    second: COP1_21
+  - first:
+      213: 6418444126675480015
+    second: COP1_22
+  - first:
+      213: -6226842760460869278
+    second: COP1_23
+  - first:
+      213: -1563939679830461630
+    second: COP1_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 30
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: COP1_0
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 151
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64ee877634cd9ae60800000000000000
+      internalID: 7974146797293071942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_1
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 149
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39e79c546f7972950800000000000000
+      internalID: 6424270477455883923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_2
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 147
+        width: 23
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d26956a092e3b1a0800000000000000
+      internalID: -6794838301877902631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_3
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 145
+        width: 23
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6cc085601d31a30800000000000000
+      internalID: 4184918303934564035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_4
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 147
+        width: 23
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac83a1564b9588bb0800000000000000
+      internalID: -4933594760459175734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_5
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 149
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7a5d2bfb0609feb0800000000000000
+      internalID: -4685707288773830019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_6
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 151
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90e76435a7031fb40800000000000000
+      internalID: 5472208324173135369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_7
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 149
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0584a58df12dbe20800000000000000
+      internalID: 3367885469095593227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_8
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 146
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13b1f1d950d2c1350800000000000000
+      internalID: 5988711106630064945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_9
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 145
+        width: 23
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8702098dec094b550800000000000000
+      internalID: 6175720207102779512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_10
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 146
+        width: 23
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db625ad07f2b98bb0800000000000000
+      internalID: -4933215142652074307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_11
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 149
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 218bb93c1daafc250800000000000000
+      internalID: 5967175849195845650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_12
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 67
+        width: 25
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 791fc42788713cc80800000000000000
+      internalID: -8303767413140426345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_13
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 67
+        width: 25
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1aac59c6e8f33030800000000000000
+      internalID: 3473393407737244187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_14
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 67
+        width: 24
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95d3978b8ec3fab40800000000000000
+      internalID: 5453644643993992537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_15
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 67
+        width: 24
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3b1fee67ac761ff0800000000000000
+      internalID: -65728085987747011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_16
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 64
+        width: 28
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e09a75ec95f7e8f40800000000000000
+      internalID: 5732659399379888398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_17
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 64
+        width: 28
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50ce321952b70aea0800000000000000
+      internalID: -5863551313557328891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_18
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 72
+        width: 28
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 413c12b43b6176a60800000000000000
+      internalID: 7667121849937019668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_19
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 72
+        width: 28
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ddb13398d85f11a0800000000000000
+      internalID: -6836648022119432744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_20
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 64
+        width: 24
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d341e2880df3dd930800000000000000
+      internalID: 4169558994885415997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_21
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 64
+        width: 32
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87daa21cb3c6245b0800000000000000
+      internalID: -5385623200482022024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_22
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 64
+        width: 28
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcd2f254de4e21950800000000000000
+      internalID: 6418444126675480015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_23
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 64
+        width: 32
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2616486208fc599a0800000000000000
+      internalID: -6226842760460869278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: COP1_24
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 22
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2433195b525cb4ae0800000000000000
+      internalID: -1563939679830461630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: ae718b5be4d85ee41b61d759c024ca6f
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      COP1_0: 7974146797293071942
+      COP1_1: 6424270477455883923
+      COP1_10: -4933215142652074307
+      COP1_11: 5967175849195845650
+      COP1_12: -8303767413140426345
+      COP1_13: 3473393407737244187
+      COP1_14: 5453644643993992537
+      COP1_15: -65728085987747011
+      COP1_16: 5732659399379888398
+      COP1_17: -5863551313557328891
+      COP1_18: 7667121849937019668
+      COP1_19: -6836648022119432744
+      COP1_2: -6794838301877902631
+      COP1_20: 4169558994885415997
+      COP1_21: -5385623200482022024
+      COP1_22: 6418444126675480015
+      COP1_23: -6226842760460869278
+      COP1_24: -1563939679830461630
+      COP1_3: 4184918303934564035
+      COP1_4: -4933594760459175734
+      COP1_5: -4685707288773830019
+      COP1_6: 5472208324173135369
+      COP1_7: 3367885469095593227
+      COP1_8: 5988711106630064945
+      COP1_9: 6175720207102779512
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
