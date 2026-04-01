@@ -10,15 +10,15 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Obstacle
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - GroundItems
+  - Particles
+  - ThrownItem
+  - Entities
+  - Player
+  - StunnedEntities
   - 
   - 
   - 
@@ -42,6 +42,27 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Corpses
+    uniqueID: 88733255
+    locked: 0
+  - name: Particles
+    uniqueID: 4055613071
+    locked: 0
+  - name: GroundItems
+    uniqueID: 1469565079
+    locked: 0
+  - name: Entities
+    uniqueID: 23645611
+    locked: 0
+  - name: WeaponBullet
+    uniqueID: 429321861
+    locked: 0
+  - name: Player
+    uniqueID: 521965617
+    locked: 0
+  - name: Obstacle
+    uniqueID: 1782920035
     locked: 0
   m_RenderingLayers:
   - Default

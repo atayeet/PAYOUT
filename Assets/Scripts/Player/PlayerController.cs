@@ -3,20 +3,27 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private float _speed;
+    [SerializeField] private float _speed;
 
-    [SerializeField]
-    private float _smoothTime = 0.1f;
+    [SerializeField] private float _smoothTime = 0.1f;
 
-    [SerializeField]
-    private float _rotationOffset = 0f; // Eðer sprite'ýnýz ters ise bunu 90 veya -90 yapýn
+    [SerializeField] private float _rotationOffset = 0f;
+
+    // float yerine Vector2 kullanÄ±yoruz. X saÄŸ-sol, Y alt-Ã¼st sÄ±nÄ±rlarÄ±nÄ± belirleyecek.
+    [SerializeField] private Vector2 _screenBorder = new Vector2(0.05f, 0.05f);
+
+    [Header("Weapon Drop/Pickup Settings")]
+    [SerializeField] private GameObject _dropPistolPrefab; // FÄ±rlatÄ±lacak yerdeki silah prefab'Ä±
+    [SerializeField] private Transform _dropPoint; // SilahÄ±n Ã§Ä±kÄ±ÅŸ noktasÄ± (Karakterin merkezi veya silah ucu olabilir)
+    [SerializeField] private float _throwForce = 15f;
+    [SerializeField] private float _pickupRadius = 1.5f; // Yerden silah alma mesafesi
 
     private Rigidbody2D _rigidbody;
     private Camera _mainCamera;
     private Animator _animator;
 
-    public Weapon _weapon; // Silah referansý
+    public Weapon weapon; // Silah bileÅŸeni
+    public bool HasWeapon { get; private set; } = false; // Ä°lk baÅŸta silah yok
 
     private Vector2 _movementInput;
     private Vector2 _currentVelocity;
@@ -24,49 +31,52 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _mainCamera = Camera.main; // Fare pozisyonunu çevirmek için ana kamera
+        _mainCamera = Camera.main; // Fare pozisyonunu Ã§evirmek iÃ§in ana kamera
         _animator = GetComponent<Animator>();
-        _weapon = GetComponentInChildren<Weapon>(); // Silah bileþenini çocuklardan bul
+        weapon = GetComponentInChildren<Weapon>(); // Silah bileÅŸenini Ã§ocuklardan bul
+    }
+    private void Start()
+    {
+        if (!HasWeapon && weapon != null)
+        {
+            weapon.gameObject.SetActive(false); // Oyuncudaki silahÄ± gizle (ilk baÅŸta)
+        }
     }
 
     private void Update()
     {
-        // Farenin ekrandaki pozisyonunu al (Yeni Input System gerektirir)
-        if (Mouse.current != null)
-        {
-            Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-            // Ekran koordinatýný dünya koordinatýna çevir
-            Vector3 mouseWorldPosition = _mainCamera.ScreenToWorldPoint(mouseScreenPosition);
-            
-            // Karakterden fareye doðru olan yön vektörünü hesapla
-            Vector2 lookDirection = mouseWorldPosition - transform.position;
-
-            // Bakýþ yönünün açýsýný (Atan2 ile) hesapla ve dereceye çevir
-            float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-
-            // Rigidbody'nin dönüþ açýsýný güncelle
-            _rigidbody.rotation = angle + _rotationOffset;
-        }
-
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            _weapon.Fire(); // Ateþ et
-        }
+        ReadInput();
     }
 
     private void FixedUpdate()
     {
         SetAnimation();
 
-        // Hedeflenen hýz
+        // Hedeflenen hï¿½z
         Vector2 targetVelocity = _movementInput * _speed;
 
-        // Mevcut hýzdan hedeflenen hýza yumuþak bir geçiþ
+        // Mevcut hï¿½zdan hedeflenen hï¿½za yumuï¿½ak bir geï¿½iï¿½
         _rigidbody.linearVelocity = Vector2.SmoothDamp(
             _rigidbody.linearVelocity,
             targetVelocity,
             ref _currentVelocity,
             _smoothTime);
+
+        PreventPlayerGoingOffScreen();
+    }
+
+    private void PreventPlayerGoingOffScreen()
+    {
+        // Karakterin mevcut pozisyonunu Viewport (0 ile 1 aralÄ±ÄŸÄ±) uzayÄ±na Ã§evir
+        Vector3 screenPosition = _mainCamera.WorldToViewportPoint(transform.position);
+        
+        // Pozisyonu Viewport iÃ§inde sÄ±nÄ±rla (Clamp)
+        // ArtÄ±k X iÃ§in _screenBorder.x, Y iÃ§in _screenBorder.y kullanÄ±yoruz
+        screenPosition.x = Mathf.Clamp(screenPosition.x, _screenBorder.x, 1f - _screenBorder.x);
+        screenPosition.y = Mathf.Clamp(screenPosition.y, _screenBorder.y, 1f - _screenBorder.y);
+
+        // HesaplanÄ±p sÄ±nÄ±rlandÄ±rÄ±lan yeni pozisyonu tekrar dÃ¼nyaya Ã§evirip Rigidbody'e uygla
+        _rigidbody.position = _mainCamera.ViewportToWorldPoint(screenPosition);
     }
 
     private void SetAnimation()
@@ -74,10 +84,92 @@ public class PlayerController : MonoBehaviour
         bool isMoving = _movementInput != Vector2.zero;
 
         _animator.SetBool("isMoving", isMoving);
+        _animator.SetBool("hasWeapon", HasWeapon); // Animator'a silah durumunu bildir
     }
 
     private void OnMove(InputValue inputValue)
     {
         _movementInput = inputValue.Get<Vector2>();
+    }
+
+    private void ReadInput()
+    {
+        // Farenin ekrandaki pozisyonunu al (Yeni Input System gerektirir)
+        if (Mouse.current != null)
+        {
+            // Ekran koordinatï¿½nï¿½ dï¿½nya koordinatï¿½na ï¿½evir
+            Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
+
+            // Karakterden fareye doï¿½ru olan yï¿½n vektï¿½rï¿½nï¿½ hesapla
+            Vector3 mouseWorldPosition = _mainCamera.ScreenToWorldPoint(mouseScreenPosition);
+            Vector2 lookDirection = mouseWorldPosition - transform.position;
+
+            // Bakï¿½ï¿½ yï¿½nï¿½nï¿½n aï¿½ï¿½sï¿½nï¿½ (Atan2 ile) hesapla ve dereceye ï¿½evir
+            float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
+
+            // Rigidbody'nin dï¿½nï¿½ï¿½ aï¿½ï¿½sï¿½nï¿½ gï¿½ncelle
+            _rigidbody.rotation = angle + _rotationOffset;
+        }
+
+        // Silah varsa ve sol tÄ±ka basÄ±lÄ±yorsa ateÅŸ et
+        if (HasWeapon && Mouse.current.leftButton.isPressed)
+        {
+            weapon.TryFire();
+        }
+
+        // SaÄŸ tÄ±k kontrolÃ¼: Silah atma veya alma
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            if (HasWeapon)
+            {
+                ThrowWeapon();
+            }
+            else
+            {
+                TryPickupWeapon();
+            }
+        }
+    }
+
+    private void ThrowWeapon()
+    {
+        HasWeapon = false;
+        weapon.gameObject.SetActive(false); // Oyuncudaki silahÄ± gizle
+
+        // Yerdeki silah prefab'Ä±nÄ± oluÅŸtur ve fÄ±rlat
+        Vector2 dropOrigin = _dropPoint != null ? (Vector2)_dropPoint.position : (Vector2)transform.position; 
+        GameObject droppedPistol = Instantiate(_dropPistolPrefab, dropOrigin, transform.rotation);
+        
+        // Karakterin baktÄ±ÄŸÄ± yÃ¶ne doÄŸru fÄ±rlat
+        DropPistol dropScript = droppedPistol.GetComponent<DropPistol>();
+        if (dropScript != null)
+        {
+            dropScript.Throw(transform.right, _throwForce); // EklediÄŸimiz script fonksiyonu
+        }
+    }
+
+    private void TryPickupWeapon()
+    {
+        // Karakterin etrafÄ±ndaki silahlarÄ± ara
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _pickupRadius);
+        foreach (Collider2D coll in colliders)
+        {
+            DropPistol droppedWeapon = coll.GetComponent<DropPistol>();
+            if (droppedWeapon != null)
+            {
+                // SilahÄ± al
+                Destroy(droppedWeapon.gameObject);
+                HasWeapon = true;
+                weapon.gameObject.SetActive(true); // Oyuncudaki silahÄ± tekrar gÃ¶rÃ¼nÃ¼r yap
+                break; // Ä°lk bulduÄŸumuz silahÄ± alÄ±nca dÃ¶ngÃ¼den Ã§Ä±k
+            }
+        }
+    }
+
+    // SeÃ§ili iken Inspector'da alma Ã§emberini Ã§izmek iÃ§in
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, _pickupRadius);
     }
 }
