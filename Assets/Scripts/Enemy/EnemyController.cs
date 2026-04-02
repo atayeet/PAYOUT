@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlayerAwarenessController))]
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IDamageable // <-- Arayüzü ekledik
 {
     [SerializeField] private float _speed;
 
@@ -25,6 +25,10 @@ public class EnemyController : MonoBehaviour
     // Sınıfın üst kısmındaki değişkenlerin yanına orijinal katmanı tutacak değişkeni ekleyin
     private int _originalLayer;
     private int _stunnedLayer;
+
+    [Header("Blood Effects")]
+    [SerializeField] private GameObject _frontBloodEffect; 
+    [SerializeField] private GameObject _backBloodEffect;  
 
     private void Awake()
     {
@@ -171,6 +175,33 @@ public class EnemyController : MonoBehaviour
         _rigidbody.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
     }
 
+    // Yeni: Hasar Alma Metodu
+    public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
+    {
+        if (!this.enabled) return; // Zaten ölüyse işlem yapma
+
+        // 1. ÖN KAN EFEKTİ
+        if (_frontBloodEffect != null)
+        {
+            float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg; // Merminin tersine
+            EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
+        }
+
+        // 2. ARKA KAN EFEKTİ
+        if (_backBloodEffect != null)
+        {
+            Vector2 enemyCenter = GetComponent<Collider2D>().bounds.center;
+            float backOffset = 0.4f;
+            Vector2 backPoint = enemyCenter + (hitDirection * backOffset);
+
+            float backAngle = Mathf.Atan2(hitDirection.y, hitDirection.x) * Mathf.Rad2Deg;
+            Instantiate(_backBloodEffect, backPoint, Quaternion.Euler(0, 0, backAngle));
+        }
+
+        // Şimdilik direkt ölsün (İleride can sistemi eklenebilir)
+        Die();
+    }
+
     // Ölüm Metodu
     public void Die()
     {
@@ -213,4 +244,6 @@ public class EnemyController : MonoBehaviour
             spriteRenderer.sortingLayerName = "Corpses"; 
         }        
     }
+
+
 }

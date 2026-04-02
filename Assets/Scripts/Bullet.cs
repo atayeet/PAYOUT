@@ -2,12 +2,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public Rigidbody2D _rigidbody;
-    public GameObject _impactEffect;
+    public Rigidbody2D rb;
+    public GameObject impactEffect;
     
-    [Header("Blood Effects")]
-    public GameObject _frontBloodEffect; // Önden çýkacak ufak kan (Giriþ yarasý)
-    public GameObject _backBloodEffect;  // Arkadan çýkacak büyük açýlý kan (Çýkýþ yarasý)
     
     private Camera _mainCamera;
 
@@ -19,13 +16,20 @@ public class Bullet : MonoBehaviour
         _mainCamera = Camera.main;
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        // Mermi doðduðunda ilk pozisyonu kaydet
+        // Mermi havuzdan her çaðýrýldýðýnda ilk pozisyonu güncellenir
         _previousPosition = transform.position;
+
+        // Önceki hareketten arta kalan fiziksel hýzlarý sýfýrla
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CheckHighSpeedCollision();
         DestroyWhenOffScreen(); 
@@ -38,47 +42,17 @@ public class Bullet : MonoBehaviour
 
         if (hit.collider != null)
         {
-            if (hit.collider.CompareTag("Enemy"))
+            Vector2 bulletDirection = ((Vector2)transform.position - _previousPosition).normalized;
+            if (bulletDirection == Vector2.zero) 
+                bulletDirection = transform.right;
+
+            // Düþman (veya hasar alabilen yapý) kontrolü
+            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+            if (damageable != null)
             {
-                // 1. Merminin hareket yönünü hesapla
-                Vector2 bulletDirection = ((Vector2)transform.position - _previousPosition).normalized;
-                if (bulletDirection == Vector2.zero) 
-                    bulletDirection = transform.right; // Eðer 0 ise merminin baktýðý yönü baz al
-
-                // 2. ÖN KAN EFEKTÝ (Giriþ Yarasý)
-                if (_frontBloodEffect != null)
-                {
-                    // Çarpýþma normalini baz al (çarptýðý yüzeyden dýþarý doðru püskürmesi için)
-                    float frontAngle = Mathf.Atan2(hit.normal.y, hit.normal.x) * Mathf.Rad2Deg;
-                    Instantiate(_frontBloodEffect, hit.point, Quaternion.Euler(0, 0, frontAngle));
-                }
-
-                // 3. ARKA KAN EFEKTÝ (Çýkýþ Yarasý)
-                if (_backBloodEffect != null)
-                {
-                    // Düþmanýn merkezinden merminin gidiþ yönüne doðru bir offset (uzaklýk) belirliyoruz
-                    // Böylece kan, düþmanýn önünden deðil doðrudan arkasýndan fýþkýrýyor hissiyatý verecek.
-                    Vector2 enemyCenter = hit.collider.bounds.center;
-                    float backOffset = 0.4f; // Düþman Sprite'ýnýn boyutuna göre bu deðeri ayarlayabilirsiniz (örn: 0.5f)
-                    Vector2 backPoint = enemyCenter + (bulletDirection * backOffset);
-
-                    // Kanýn fýþkýrma açýsý, merminin yönüyle ayný olacak
-                    float backAngle = Mathf.Atan2(bulletDirection.y, bulletDirection.x) * Mathf.Rad2Deg;
-                    Instantiate(_backBloodEffect, backPoint, Quaternion.Euler(0, 0, backAngle));
-                }
-
-                // Düþmaný öldür
-                EnemyController enemy = hit.collider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    enemy.Die();
-                }
-                else
-                {
-                    Destroy(hit.collider.gameObject); // Yedek güvenlik
-                }
-
-                BulletPool.Instance.ReturnBullet(this);
+                // Hasarý, merminin vurduðu noktayý ve yönü ilet
+                damageable.TakeDamage(1, hit.point, bulletDirection);
+                BulletPool.Instance.ReturnBullet(this); // Mermiyi havuza geri gönder
             }
             else if (hit.collider.CompareTag("Wall"))
             {
@@ -107,9 +81,9 @@ public class Bullet : MonoBehaviour
     public void Impact()
     {
         // Efekti oluþtur (Eðer _impactEffect atandýysa)
-        if (_impactEffect != null)
+        if (impactEffect != null)
         {
-            Instantiate(_impactEffect, transform.position, Quaternion.identity); 
+            Instantiate(impactEffect, transform.position, Quaternion.identity); 
         }
         
         BulletPool.Instance.ReturnBullet(this);

@@ -105,7 +105,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 429321861
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: 73566515401761214, guid: 8f8e4d49e5f180a47b680b860f47e4d3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -176,10 +176,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b86ba5cdd9e1b0c4c88c5cb5fab1e975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rigidbody: {fileID: 5450746625001755327}
-  _impactEffect: {fileID: 1658562845309826057, guid: 90831df13cf30114d8ede2a5bb590ff9, type: 3}
-  _frontBloodEffect: {fileID: 703518632434256707, guid: c1af51ec39202254d8c3954074c7359d, type: 3}
-  _backBloodEffect: {fileID: 946055613231259823, guid: 3fd961333aac9024197749bed8fb9a98, type: 3}
+  rb: {fileID: 5450746625001755327}
+  impactEffect: {fileID: 1658562845309826057, guid: 90831df13cf30114d8ede2a5bb590ff9, type: 3}
+  frontBloodEffect: {fileID: 703518632434256707, guid: c1af51ec39202254d8c3954074c7359d, type: 3}
+  backBloodEffect: {fileID: 946055613231259823, guid: 3fd961333aac9024197749bed8fb9a98, type: 3}
 --- !u!1 &8214686656735123616
 GameObject:
   m_ObjectHideFlags: 0

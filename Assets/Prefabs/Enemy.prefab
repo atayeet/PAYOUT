@@ -134,6 +134,8 @@ MonoBehaviour:
   _speed: 7
   _rotationSpeed: 200
   _screenBorder: {x: 0.03, y: 0.055}
+  _frontBloodEffect: {fileID: 703518632434256707, guid: c1af51ec39202254d8c3954074c7359d, type: 3}
+  _backBloodEffect: {fileID: 946055613231259823, guid: 3fd961333aac9024197749bed8fb9a98, type: 3}
 --- !u!114 &4909937700578894967
 MonoBehaviour:
   m_ObjectHideFlags: 0

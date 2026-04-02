@@ -15,7 +15,16 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void Awake()
     {
-        _player = Object.FindFirstObjectByType<PlayerController>().transform;
+        PlayerController playerController = Object.FindFirstObjectByType<PlayerController>();
+        if (playerController != null)
+        {
+            _player = playerController.transform;
+        }
+        else
+        {
+            Debug.LogWarning("PlayerController sahnede bulunamadý!");
+        }
+
         _sqrPlayerAwarenessDistance = _playerAwarenessDistance * _playerAwarenessDistance;
     }
 

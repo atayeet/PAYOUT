@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject _bullet;
-    public Transform _firePoint;
-    public float _fireForce;
+    public GameObject bullet;
+    public Transform firePoint;
+    public float fireForce;
     
     [Tooltip("Duvarlarýn ait olduðu katmaný (Layer) seçin")]
     public LayerMask _obstacleLayer; // Duvarlarý ayýrt etmek için
@@ -30,7 +30,7 @@ public class Weapon : MonoBehaviour
     private void Fire()
     {
         Vector2 origin = transform.position; // Silahýn kendi konumu
-        Vector2 target = _firePoint.position;
+        Vector2 target = firePoint.position;
         Vector2 spawnPosition = target;
 
         // Silahýn merkezi ile firepoint arasýna bir çizgi çeker. 
@@ -47,8 +47,8 @@ public class Weapon : MonoBehaviour
 
         Bullet bullet = BulletPool.Instance.GetBullet(spawnPosition);
 
-        bullet.transform.rotation = _firePoint.rotation;
+        bullet.transform.rotation = firePoint.rotation;
 
-        bullet._rigidbody.AddForce(_firePoint.right * _fireForce, ForceMode2D.Impulse);
+        bullet.rb.AddForce(firePoint.right * fireForce, ForceMode2D.Impulse);
     }
 }
