@@ -72,20 +72,7 @@ public class EnemyController : MonoBehaviour
         bool isMoving = _targetDirection != Vector2.zero && _rigidbody.linearVelocity.sqrMagnitude > 0.01f;
 
         _animator.SetBool("isMoving", isMoving);
-
-        // Stun bittiğinde Animator'ı "EnemyStunned" durumundan koparmak için
-        // zorunlu olarak Idle veya Run animasyonuna yönlendir:
-        if (!_isStunned)
-        {
-            if (isMoving)
-            {
-                _animator.Play("EnemyRun");
-            }
-            else
-            {
-                _animator.Play("EnemyIdle");
-            }
-        }
+        _animator.SetBool("isStunned", _isStunned);
     }
 
     private void UpdateTargetDirection()
@@ -102,7 +89,7 @@ public class EnemyController : MonoBehaviour
 
     private void HandleRandomDirectionChange()
     {
-        _changeDirectionCooldown -= Time.deltaTime;
+        _changeDirectionCooldown -= Time.fixedDeltaTime;
 
         if (_changeDirectionCooldown <= 0f)
         {
@@ -143,7 +130,7 @@ public class EnemyController : MonoBehaviour
         //}
 
         Quaternion targetRotation = Quaternion.LookRotation(transform.forward, _targetDirection);
-        Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+        Quaternion rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
 
         _rigidbody.SetRotation(rotation);
     }
@@ -176,9 +163,7 @@ public class EnemyController : MonoBehaviour
 
         if (_animator != null)
         {
-            // İkinci parametre (-1) herhangi bir layer'da ara demek. 
-            // Üçüncü parametre (0f) animasyonu 0. saniyeden itibaren başlatır.
-            _animator.Play("EnemyStunned", -1, 0f);
+            _animator.SetBool("isStunned", true);
         }
 
         // Fiziksel savrulma kuvveti (Mevcut hareketini iptal edip savrulma yönüne güç uygula)
@@ -191,12 +176,20 @@ public class EnemyController : MonoBehaviour
     {
         // 1. Scripti devre dışı bırak, artık takip veya hareket işlemleri update edilmesin
         this.enabled = false;
-        
+
         // 2. Düşmanın fiziksel hızını sıfırla ki kaymaya devam etmesin
         _rigidbody.linearVelocity = Vector2.zero;
-        
+
         // Cesedin fizik motorunu meşgul etmesini engellemek için Rigidbody simülasyonunu kapatıyoruz
         _rigidbody.simulated = false;
+
+        // Karakterin Animator'daki mevcut döngüleri (Stun, Run vb.) bozmaması ve "Ölü" durumuna geçmesi için:
+        if (_animator != null)
+        {
+            _animator.SetBool("isDead", true);
+            _animator.SetBool("isStunned", false);
+            _animator.SetBool("isMoving", false);
+        }
 
         // 3. Üst üste hasar almaması için (veya içinden geçilebilmesi için) collider'ı kapat
         Collider2D collider = GetComponent<Collider2D>();

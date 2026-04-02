@@ -11,22 +11,23 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private Transform _player;
 
+    private float _sqrPlayerAwarenessDistance;
+
     private void Awake()
     {
         _player = Object.FindFirstObjectByType<PlayerController>().transform;
+        _sqrPlayerAwarenessDistance = _playerAwarenessDistance * _playerAwarenessDistance;
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector2 enemyToPlayerVector = _player.position - transform.position;
-        DirectionToPlayer = enemyToPlayerVector.normalized; 
-        // Enemy'den Player'a giden vektörün yönü
-        // DirectionToPlayer olarak atanýr ve normalleþtirilir (birim vektör haline getirilir).
 
-        if (enemyToPlayerVector.magnitude <= _playerAwarenessDistance)
+        if (enemyToPlayerVector.sqrMagnitude <= _sqrPlayerAwarenessDistance)
         {
             AwareOfPlayer = true;
+            DirectionToPlayer = enemyToPlayerVector.normalized;
         }
         else
         {
