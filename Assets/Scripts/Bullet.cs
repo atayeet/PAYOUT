@@ -37,11 +37,14 @@ public class Bullet : MonoBehaviour
 
     private void CheckHighSpeedCollision()
     {
-        // Bir önceki kareden þu anki kareye kadar olan mesafeyi kontrol et
-        RaycastHit2D hit = Physics2D.Linecast(_previousPosition, transform.position);
+        // Bir önceki kareden þu anki kareye kadar olan çizgideki TÜM objeleri kontrol et
+        RaycastHit2D[] hits = Physics2D.LinecastAll(_previousPosition, transform.position);
 
-        if (hit.collider != null)
+        foreach (RaycastHit2D hit in hits)
         {
+            // Merminin kendi collider'ýný kazara vurmasýný önle
+            if (hit.collider.gameObject == this.gameObject) continue;
+
             Vector2 bulletDirection = ((Vector2)transform.position - _previousPosition).normalized;
             if (bulletDirection == Vector2.zero) 
                 bulletDirection = transform.right;
@@ -53,12 +56,14 @@ public class Bullet : MonoBehaviour
                 // Hasarý, merminin vurduðu noktayý ve yönü ilet
                 damageable.TakeDamage(1, hit.point, bulletDirection);
                 BulletPool.Instance.ReturnBullet(this); // Mermiyi havuza geri gönder
+                break; // Mermi patladýðý için döngüden çýk
             }
             else if (hit.collider.CompareTag("Wall"))
             {
                 // Mermiyi tam çarptýðý noktaya taþý (efektin doðru yerde çýkmasý için)
                 transform.position = hit.point;
                 Impact();
+                break; // Duvara çarptýðý için döngüden çýk
             }
         }
 

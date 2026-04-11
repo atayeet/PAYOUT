@@ -18,8 +18,16 @@ public class EffectPool : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else 
+        {
+            Debug.LogWarning("Multiple instances of BulletPool detected. Destroying duplicate.");
+            Destroy(gameObject); 
+            return; 
+        }
 
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
@@ -38,7 +46,10 @@ public class EffectPool : MonoBehaviour
 
     public GameObject SpawnEffect(string id, Vector2 position, Quaternion rotation)
     {
-        if (!poolDictionary.ContainsKey(id) || poolDictionary[id].Count == 0) return null;
+        if (!poolDictionary.ContainsKey(id) || poolDictionary[id].Count == 0)
+        {
+            return null;
+        }
 
         GameObject obj = poolDictionary[id].Dequeue();
         
