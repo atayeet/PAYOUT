@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _throwForce = 15f;
     [SerializeField] private float _pickupRadius = 1.5f;
 
+    [Header("Finisher Settings")]
+    [SerializeField] private float _finisherRange = 1.5f; // Düşmana ne kadar yakından infaz yapılabileceği
+
     private Rigidbody2D _rigidbody;
     private Camera _mainCamera;
     private Animator _animator;
@@ -27,6 +30,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 _movementInput;
     private Vector2 _currentVelocity;
+
+    public bool IsPerformingFinisher { get; private set; } = false;
+    private EnemyController _finisherTarget = null; // Üzerinde işlem yapılan düşman
 
     private void Awake()
     {
@@ -51,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (IsDead) return;
+        if (IsDead || IsPerformingFinisher) return; // Finisher yapıyorken hareketi durdur
 
         SetAnimation();
 
@@ -70,7 +76,17 @@ public class PlayerController : MonoBehaviour
 
     private void ReadInput()
     {
-        // Farenin ekrandaki pozisyonunu al (Yeni Input System gerektirir)
+        // ------------- FİNİSHER DURUMUNDA İSE SADECE SOL TIK BEKLE -------------
+        if (IsPerformingFinisher)
+        {
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                ExecuteFinisherAction();
+            }
+            return; // Finisher yaparken başka tuşları ve dönmeyi engelle
+        }
+
+        // ------------- NORMAL GİRDİLER -------------
         if (Mouse.current != null)
         {
             // Ekran koordinat�n� d�nya koordinat�na �evir
@@ -83,27 +99,71 @@ public class PlayerController : MonoBehaviour
             // Bak�� y�n�n�n a��s�n� (Atan2 ile) hesapla ve dereceye �evir
             float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
 
-            // Rigidbody'nin d�n�� a��s�n� g�ncelle
             _rigidbody.rotation = angle + _rotationOffset;
         }
 
+        // Space tuşu ile Finisher Başlatma
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            TryInitiateFinisher();
+        }
+
         // Silah varsa ve sol tıka basılıyorsa ateş et
-        if (HasWeapon && Mouse.current.leftButton.isPressed)
+        if (HasWeapon && Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
             weapon.TryFire();
         }
 
         // Sağ tık kontrolü: Silah atma veya alma
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
-            if (HasWeapon)
+            if (HasWeapon) ThrowWeapon();
+            else TryPickupWeapon();
+        }
+    }
+
+    private void TryInitiateFinisher()
+    {
+        // Etraftaki objeleri tara
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _finisherRange);
+        foreach (Collider2D coll in colliders)
+        {
+            EnemyController enemy = coll.GetComponent<EnemyController>();
+            
+            // Eğer düşmansa, yaşıyorsa, stun yemişse ve halihazırda infaz edilmiyorsa
+            if (enemy != null && enemy.enabled && enemy.IsCurrentlyStunned && !enemy.IsBeingFinished)
             {
-                ThrowWeapon();
+                // Finisher'ı başlat
+                IsPerformingFinisher = true;
+                _finisherTarget = enemy;
+                _movementInput = Vector2.zero;
+                _rigidbody.linearVelocity = Vector2.zero; // Oyuncuyu aniden durdur
+
+                // 1. Oyuncunun konumunu düşmanın üzerine (azıcık offset ile) sabitle
+                transform.position = enemy.transform.position; // Tam üstü
+                
+                // 2. Animatorlara state gönder
+                _animator.SetBool("isFinisherReady", true); // Oyuncu diz çöker
+                _finisherTarget.StartBeingFinished();     // Düşman hafif doğrulur
+                break;
             }
-            else
-            {
-                TryPickupWeapon();
-            }
+        }
+    }
+
+    private void ExecuteFinisherAction()
+    {
+        if (_finisherTarget != null)
+        {
+            // 1. Animasyonu tetikle (3 Karelik boyun kırma animasyonu)
+            _animator.SetTrigger("executeFinisher");
+            
+            // 2. Düşmanın ölümünü ve kan efektini tetikle
+            _finisherTarget.ExecuteFinisherDeath();
+            
+            // 3. Finisher Modundan Çık
+            IsPerformingFinisher = false;
+            _finisherTarget = null;
+            _animator.SetBool("isFinisherReady", false); // Tekrar ayağa kalk/normal state'e geç
         }
     }
 
@@ -136,8 +196,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
-
     private void SetAnimation()
     {
         bool isMoving = _movementInput != Vector2.zero;
@@ -150,9 +208,6 @@ public class PlayerController : MonoBehaviour
     {
         _movementInput = inputValue.Get<Vector2>();
     }
-
-
-    
 
     private void ThrowWeapon()
     {
@@ -193,9 +248,9 @@ public class PlayerController : MonoBehaviour
     {
         IsDead = true;
 
-        // FrontBlood Effect (Pool)
-        float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg;
-        EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
+        //// FrontBlood Effect (Pool)
+        //float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg;
+        //EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
 
         // BackBlood Effect (Pool)
         Vector2 playerCenter = GetComponent<Collider2D>().bounds.center;
@@ -229,6 +284,9 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, _pickupRadius);
+        Gizmos.DrawWireSphere(transform.position, _pickupRadius); // Mevcut pickup menzili
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _finisherRange); // Finisher menzili
     }
 }

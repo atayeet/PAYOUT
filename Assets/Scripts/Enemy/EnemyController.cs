@@ -17,6 +17,9 @@ public class EnemyController : MonoBehaviour, IDamageable
     private int _stunnedLayer;
     public bool IsCurrentlyStunned => _isStunned;
 
+    // Finish Değişkenleri
+    public bool IsBeingFinished { get; private set; } = false;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -79,9 +82,9 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         if (!this.enabled) return;
 
-        // Ön taraftaki kan efekti
-        float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg;
-        EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
+        //// Ön taraftaki kan efekti
+        //float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg;
+        //EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
 
         _playerAwarenessController.SetAgentEnabled(false);
 
@@ -94,7 +97,42 @@ public class EnemyController : MonoBehaviour, IDamageable
         Die();
     }
 
-    public void Die()
+    // Player, Space tuşuna basıp üzerine atladığında çağrılır
+    public void StartBeingFinished()
+    {
+        if (!this.enabled || !_isStunned) return;
+
+        IsBeingFinished = true;
+        _stunTimer = 999f; // Kalkmasını engellemek için süreyi dondur/uzat
+        _rigidbody.linearVelocity = Vector2.zero; // Hareketi durdur
+        
+        if (_animator != null)
+        {
+            _animator.SetBool("isBeingFinished", true); // Yerden doğrulma animasyonu
+        }
+    }
+
+    // Player sol tıka bastığında çağrılır
+    public void ExecuteFinisherDeath()
+    {
+        if (_animator != null)
+        {
+            // Doğrulma animasyonundan çık
+            _animator.SetBool("isBeingFinished", false);
+            
+            // Artık trigger kullanmamıza gerek yok, animasyonu Die() içinde rastgele oynatacağız.
+            // _animator.SetTrigger("finisherDie"); 
+        }
+
+        // Kan efekti çıkarma (Kafanın olduğu yere çıkartmak için ufak bir offset verilebilir)
+        Vector2 enemyCenter = GetComponent<Collider2D>().bounds.center;
+        EffectPool.Instance.SpawnEffect("FrontBlood", enemyCenter, Quaternion.identity);
+
+        Die(true); // Ölüm fonksiyonunu çağır (Finisher ile öldüğünü belirt)
+    }
+
+    // Die fonksiyonuna isteğe bağlı bir parametre ekledik
+    public void Die(bool isFinisherDeath = false)
     {
         this.enabled = false;
         
@@ -112,7 +150,17 @@ public class EnemyController : MonoBehaviour, IDamageable
             _animator.SetBool("isDead", true);
             _animator.SetBool("isStunned", false);
             _animator.SetBool("isMoving", false);
-            _animator.Play("EnemyDeath" + Random.Range(1, 5));
+
+            if (!isFinisherDeath)
+            {
+                // Normal ölüm: EnemyDeath1, 2, 3 veya 4
+                _animator.Play("EnemyDeath" + Random.Range(1, 5));
+            }
+            else
+            {
+                // İnfaz ölümü: EnemyKnocked1, 2, 3 veya 4
+                _animator.Play("EnemyKnocked" + Random.Range(1, 5));
+            }
         }
 
         Collider2D collider = GetComponent<Collider2D>();
