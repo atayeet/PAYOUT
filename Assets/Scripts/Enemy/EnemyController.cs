@@ -67,7 +67,7 @@ public class EnemyController : MonoBehaviour, IDamageable
 
         _isStunned = true;
         _playerAwarenessController.IsStunned = true; // YZ Hareketini durdur
-        _stunTimer = 1f;
+        _stunTimer = 1.5f;
 
         _playerAwarenessController.SetAgentEnabled(false); 
         

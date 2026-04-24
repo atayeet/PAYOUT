@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviour
     [Header("Finisher Settings")]
     [SerializeField] private float _finisherRange = 1.5f; // Düşmana ne kadar yakından infaz yapılabileceği
 
+    [Header("Punch Settings")]
+    [SerializeField] private float _punchRange = 1f; // Yumruk menzili
+    [SerializeField] private float _punchRadius = 0.5f; // Yumruk genişliği (OverlapCircle için)
+    [SerializeField] private float _punchCooldown = 0.25f; // İki yumruk arası bekleme
+    [SerializeField] private float _punchKnockbackForce = 5f; // Düşmanı ittirme gücü
+    [SerializeField] private Transform _punchPoint; // Yumruğun çıkacağı nokta (Empty GameObject)
+
     private Rigidbody2D _rigidbody;
     private Camera _mainCamera;
     private Animator _animator;
@@ -32,7 +39,14 @@ public class PlayerController : MonoBehaviour
     private Vector2 _currentVelocity;
 
     public bool IsPerformingFinisher { get; private set; } = false;
-    private EnemyController _finisherTarget = null; // Üzerinde işlem yapılan düşman
+    private EnemyController _finisherTarget = null; 
+
+    private float _nextPunchTime = 0f;
+    private bool _isRightPunchNext = true; 
+    
+    // Yumruk atılıyor durumunu takip için (Opsiyonel ama hareket ile birleştirirken iyi olur)
+    private bool _isPunching = false; 
+    private float _punchEndTime = 0f;
 
     private void Awake()
     {
@@ -52,6 +66,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (IsDead) return;
+
+        // Punch bitiş zamanı kontrolü (Sadece state takibi için)
+        if (_isPunching && Time.time >= _punchEndTime) 
+        {
+            _isPunching = false;
+        }
+
         ReadInput();
     }
 
@@ -61,10 +82,10 @@ public class PlayerController : MonoBehaviour
 
         SetAnimation();
 
-        // Hedeflenen h�z
+        // Hedeflenen hiz
         Vector2 targetVelocity = _movementInput * _speed;
 
-        // Mevcut h�zdan hedeflenen h�za yumu�ak bir ge�i�
+        // Mevcut hizdan hedeflenen hiza yumusak bir gecis
         _rigidbody.linearVelocity = Vector2.SmoothDamp(
             _rigidbody.linearVelocity,
             targetVelocity,
@@ -77,6 +98,7 @@ public class PlayerController : MonoBehaviour
     private void ReadInput()
     {
         // ------------- FİNİSHER DURUMUNDA İSE SADECE SOL TIK BEKLE -------------
+
         if (IsPerformingFinisher)
         {
             if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
@@ -87,16 +109,18 @@ public class PlayerController : MonoBehaviour
         }
 
         // ------------- NORMAL GİRDİLER -------------
+
+        // Silah varsa ve sol tıka basılıyorsa ateş et
         if (Mouse.current != null)
         {
-            // Ekran koordinat�n� d�nya koordinat�na �evir
+            // Ekran koordinatini dunya koordinatina cevir
             Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
 
-            // Karakterden fareye do�ru olan y�n vekt�r�n� hesapla
+            // Karakterden fareye dogru olan yon vektorunu hesapla
             Vector3 mouseWorldPosition = _mainCamera.ScreenToWorldPoint(mouseScreenPosition);
             Vector2 lookDirection = mouseWorldPosition - transform.position;
 
-            // Bak�� y�n�n�n a��s�n� (Atan2 ile) hesapla ve dereceye �evir
+            // Bakis yonunun acisini (Atan2 ile) hesapla ve dereceye cevir
             float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
 
             _rigidbody.rotation = angle + _rotationOffset;
@@ -108,18 +132,86 @@ public class PlayerController : MonoBehaviour
             TryInitiateFinisher();
         }
 
-        // Silah varsa ve sol tıka basılıyorsa ateş et
-        if (HasWeapon && Mouse.current != null && Mouse.current.leftButton.isPressed)
+        // Ateş etme VEYA Yumruk atma
+        if (Mouse.current != null)
         {
-            weapon.TryFire();
+            if (HasWeapon)
+            {
+                 // EĞER silaha sahipken ateş etme
+                if (Mouse.current.leftButton.isPressed)
+                {
+                    weapon.TryFire();
+                }
+            }
+            else
+            {
+                // SİLAHSIZSA: Sol tıka tıklandığında veya basılı tutulduğunda yumruk at
+                if (Mouse.current.leftButton.isPressed && Time.time >= _nextPunchTime)
+                {
+                    ExecutePunch();
+                    _nextPunchTime = Time.time + _punchCooldown;
+                }
+            }
         }
 
-        // Sağ tık kontrolü: Silah atma veya alma
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
             if (HasWeapon) ThrowWeapon();
             else TryPickupWeapon();
         }
+    }
+
+    private void ExecutePunch()
+    {
+        _isPunching = true;
+        _punchEndTime = Time.time + _punchCooldown; // Animasyonun yaklaşık bitiş süresi
+
+        // Hareket ediyor mu kontrol et (RunPunch vs IdlePunch)
+        bool isMoving = _movementInput.sqrMagnitude > 0.01f;
+        string animName = "";
+
+        if (isMoving)
+        {
+            animName = _isRightPunchNext ? "PlayerPunchRunRight" : "PlayerPunchRunLeft";
+        }
+        else
+        {
+            animName = _isRightPunchNext ? "PlayerPunchIdleRight" : "PlayerPunchIdleLeft";
+        }
+
+        // Animator'u Override Et (Trigger vs yerine direkt Animasyonu çal!)
+        // Katman 0 (Base Layer) ve baştan oynaması için 0, 0 parametreleri
+        _animator.Play(animName, 0, 0f);
+
+        _isRightPunchNext = !_isRightPunchNext;
+
+        // Düşmana hasar / stun kontrolü
+        Vector2 punchOrigin = _punchPoint != null ? (Vector2)_punchPoint.position : (Vector2)transform.position + (Vector2)transform.right * _punchRange;
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(punchOrigin, _punchRadius);
+        foreach (Collider2D enemyCollider in hitEnemies)
+        {
+            EnemyController enemy = enemyCollider.GetComponent<EnemyController>();
+            
+            if (enemy != null && enemy.enabled)
+            {
+                // Düşmana yumrukla vurursak sadece Stun yiyor (Hasar yok)
+                Vector2 knockbackDir = (enemy.transform.position - transform.position).normalized;
+                enemy.Stun(knockbackDir, _punchKnockbackForce);
+            }
+        }
+    }
+
+    private void SetAnimation()
+    {
+        // Eğer Punch atıyorsak (Play() ile çaldık üstte), Standart Walk/Idle animasyonlarını ezmesin diye kontrol
+        // (Çünkü biz Play dedikten hemensonra burası işleyip SetBool "isMoving" diyeecek.
+        // EĞER Unity Animator'ünde "PlayerPunch..." animasyonlarında tekrar Walk'a ok çekmeyeceksense
+        // Play methodu en temizi. Ancak Animator'de bu değerlerin yine de set edilmesinde sorun yok.
+        
+        bool isMoving = _movementInput != Vector2.zero;
+
+        _animator.SetBool("isMoving", isMoving);
+        _animator.SetBool("hasWeapon", HasWeapon); 
     }
 
     private void TryInitiateFinisher()
@@ -137,12 +229,18 @@ public class PlayerController : MonoBehaviour
                 IsPerformingFinisher = true;
                 _finisherTarget = enemy;
                 _movementInput = Vector2.zero;
-                _rigidbody.linearVelocity = Vector2.zero; // Oyuncuyu aniden durdur
-
-                // 1. Oyuncunun konumunu düşmanın üzerine (azıcık offset ile) sabitle
-                transform.position = enemy.transform.position; // Tam üstü
                 
-                // 2. Animatorlara state gönder
+                // Oyuncuyu aniden durdur (dönme kuvvetlerini de sıfırla ki fare yüzünden kaymasın)
+                _rigidbody.linearVelocity = Vector2.zero;
+                _rigidbody.angularVelocity = 0f;
+
+                // 1. Oyuncunun konumunu yaklaşık olarak (kayma payıyla) düşmanın üzerine sabitle
+                transform.position = enemy.transform.position - (enemy.transform.up * 0.2f);
+
+                // 2. Oyuncunun yönünü düşmanın yönüyle BİREBİR AYNI yap (Vücutlar üst üste otursun)
+                _rigidbody.rotation = enemy.GetComponent<Rigidbody2D>().rotation;
+                
+                // 3. Animatorlara state gönder
                 _animator.SetBool("isFinisherReady", true); // Oyuncu diz çöker
                 _finisherTarget.StartBeingFinished();     // Düşman hafif doğrulur
                 break;
@@ -194,14 +292,6 @@ public class PlayerController : MonoBehaviour
             Vector2 hitDirection = (transform.position - enemy.transform.position).normalized;
             Die(hitPoint, hitDirection);
         }
-    }
-
-    private void SetAnimation()
-    {
-        bool isMoving = _movementInput != Vector2.zero;
-
-        _animator.SetBool("isMoving", isMoving);
-        _animator.SetBool("hasWeapon", HasWeapon); // Animator'a silah durumunu bildir
     }
 
     private void OnMove(InputValue inputValue)
@@ -278,15 +368,5 @@ public class PlayerController : MonoBehaviour
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses";
 
         this.enabled = false;
-    }
-
-    // Seçili iken Inspector'da alma çemberini çizmek için
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, _pickupRadius); // Mevcut pickup menzili
-        
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _finisherRange); // Finisher menzili
     }
 }

@@ -178,8 +178,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 5450746625001755327}
   impactEffect: {fileID: 1658562845309826057, guid: 90831df13cf30114d8ede2a5bb590ff9, type: 3}
-  frontBloodEffect: {fileID: 703518632434256707, guid: c1af51ec39202254d8c3954074c7359d, type: 3}
-  backBloodEffect: {fileID: 946055613231259823, guid: 3fd961333aac9024197749bed8fb9a98, type: 3}
 --- !u!1 &8214686656735123616
 GameObject:
   m_ObjectHideFlags: 0
