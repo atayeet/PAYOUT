@@ -12,7 +12,10 @@ public class PlayerAwarenessController : MonoBehaviour
 
     [Header("Awareness")]
     [SerializeField] private float _playerAwarenessDistance = 10f;
+    [Tooltip("Düþmanýn görüþünü engelleyecek katmanlar (Örn: Obstacle, Door)")]
+    //[SerializeField] private LayerMask _obstacleLayerMask; // Yeni eklenen LayerMask
 
+    // Diðer deðiþkenleriniz ayný kalýyor...
     [Header("Movement & Rotation")]
     [SerializeField] private float _chaseSpeed = 3.5f;
     [SerializeField] private float _patrolSpeed = 1.5f;
@@ -82,8 +85,21 @@ public class PlayerAwarenessController : MonoBehaviour
 
         if (enemyToPlayerVector.sqrMagnitude <= _sqrPlayerAwarenessDistance)
         {
-            AwareOfPlayer = true;
-            DirectionToPlayer = enemyToPlayerVector.normalized;
+            // Görüþ Açýsý Kontrolü (Line of Sight)
+            // Düþmandan oyuncuya bir çizgi (Linecast) çeker, engele çarpýp çarpmadýðýna bakar
+            RaycastHit2D hit = Physics2D.Linecast(transform.position, _playerTransform.position, LayerMask.GetMask("Obstacle", "Door"));
+
+            // Eðer aradaki çizgi belirtilen LayerMask'teki bir þeye çarpmamýþsa (hit.collider yoksa) oyuncuyu görür
+            if (hit.collider == null)
+            {
+                AwareOfPlayer = true;
+                DirectionToPlayer = enemyToPlayerVector.normalized;
+            }
+            else
+            {
+                // Arada duvar vb. bir engel var ise oyuncuyu duymaz/görmez
+                AwareOfPlayer = false;
+            }
         }
         else
         {
@@ -144,12 +160,12 @@ public class PlayerAwarenessController : MonoBehaviour
             if (distance <= _roomSearchRadius) // Sadece belli bir yarýçaptakileri kontrol et
             {
                 // Arada engel (Obstacle) yoksa listeye dahil et
+                // Burada da Inspector üzerinden belirlediðimiz LayerMask'i kullanmak daha tutarlý olur
                 RaycastHit2D hit = Physics2D.Linecast(transform.position, point.transform.position, LayerMask.GetMask("Obstacle", "Door"));
 
                 if (hit.collider == null)
                 {
                     _currentPatrolPoints.Add(point.transform);
-
                 }
             }
         }
@@ -173,7 +189,6 @@ public class PlayerAwarenessController : MonoBehaviour
         }
     }
 
-    // Agent'a dýþarýdan eriþim gerekirse (stun vb. durumlar için)
     public void SetAgentEnabled(bool isEnabled)
     {
         if (_agent != null) _agent.enabled = isEnabled;
@@ -186,25 +201,25 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // 1. Oyuncuyu Fark Etme (Awareness) Alaný - Kýrmýzý Çember
-        Gizmos.color = Color.red;
+        // 1. Oyuncuyu Fark Etme (Awareness) Alaný - Kýrmýzý Çember
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _playerAwarenessDistance);
 
-        // 2. Devriye Noktalarýný Tarama Alaný (Room Search) - Mavi Çember
-        Gizmos.color = Color.cyan;
+        // 2. Devriye Noktalarýný Tarama Alaný (Room Search) - Mavi Çember
+        Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, _roomSearchRadius);
 
-        // Eðer oyun çalýþýyorsa hedeflere doðru çizgiler çiz
-        if (Application.isPlaying)
+        // Eðer oyun çalýþýyorsa hedeflere doðru çizgiler çiz
+        if (Application.isPlaying)
         {
-            // Kovalama Modu: Oyuncuya sarý bir çizgi çeker
-            if (_currentState == EnemyState.Chase && _playerTransform != null)
+            // Kovalama Modu: Oyuncuya sarý bir çizgi çeker
+            if (_currentState == EnemyState.Chase && _playerTransform != null)
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawLine(transform.position, _playerTransform.position);
             }
-            // Devriye Modu: Gittiði hedefe yeþil bir çizgi çeker
-            else if (_currentState == EnemyState.Patrol && _currentPatrolPoints.Count > 0)
+            // Devriye Modu: Gittiði hedefe yeþil bir çizgi çeker
+            else if (_currentState == EnemyState.Patrol && _currentPatrolPoints.Count > 0)
             {
                 Transform targetPoint = _currentPatrolPoints[_currentPatrolIndex];
                 if (targetPoint != null)

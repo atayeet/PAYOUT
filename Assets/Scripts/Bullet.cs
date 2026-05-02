@@ -49,6 +49,15 @@ public class Bullet : MonoBehaviour
             if (bulletDirection == Vector2.zero) 
                 bulletDirection = transform.right;
 
+            // Çarptýðýmýz objenin Enemy Controller olup olmadýðýný kontrol et
+            EnemyController enemy = hit.collider.GetComponent<EnemyController>();
+
+            // EÐER DÜÞMAN STUNLANMIÞSA (SERSEMLEMÝÞSE) BU MERMÝYÝ YOK SAY VE DÝÐER OBJELERE BAKMAYA DEVAM ET
+            if (enemy != null && enemy.IsCurrentlyStunned)
+            {
+                continue;
+            }
+
             // Düþman (veya hasar alabilen yapý) kontrolü
             IDamageable damageable = hit.collider.GetComponent<IDamageable>();
             if (damageable != null)

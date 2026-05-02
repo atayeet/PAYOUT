@@ -11,6 +11,10 @@ public class EnemyController : MonoBehaviour, IDamageable
     private PlayerAwarenessController _playerAwarenessController;
     private Animator _animator;
 
+    [Header("Combat Settings")]
+    [Tooltip("Mermi yediğinde ne kadar geriye savrulacak?")]
+    [SerializeField] private float _bulletKnockbackForce = 500f; // Mermi savrulma gücünü Inspector'a taşıdık
+
     // Stun Değişkenleri
     private bool _isStunned = false; 
     private float _stunTimer = 0f;
@@ -80,10 +84,17 @@ public class EnemyController : MonoBehaviour, IDamageable
 
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null) spriteRenderer.sortingLayerName = "StunnedEntities";
+
     }
     public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
     {
         if (!this.enabled) return;
+        
+        // DÜŞMAN STUNNED (SERSEMLEMİŞ) DURUMDAYKEN HASAR ALAMAZ/VURULAMAZ
+        if (_isStunned) return; 
 
         _playerAwarenessController.SetAgentEnabled(false);
 
@@ -91,10 +102,12 @@ public class EnemyController : MonoBehaviour, IDamageable
         Vector2 backPoint = enemyCenter;
 
         float backAngle = Mathf.Atan2(hitDirection.y, hitDirection.x) * Mathf.Rad2Deg;
-
         Quaternion bloodRotation = Quaternion.Euler(0f, 0f, backAngle);
 
         EffectPool.Instance.SpawnEffect("BackBlood", backPoint, bloodRotation);
+
+        // SerializeField üzerinden belirlediğimiz gücü kullanıyoruz
+        _rigidbody.AddForce(hitDirection * _bulletKnockbackForce, ForceMode2D.Impulse);
 
         Die();
     }
@@ -143,10 +156,11 @@ public class EnemyController : MonoBehaviour, IDamageable
             _playerAwarenessController.SetAgentEnabled(false);
             _playerAwarenessController.enabled = false;
         }
-        
-        _rigidbody.linearVelocity = Vector2.zero;
-        _rigidbody.simulated = false;
 
+        // --- BU KISMI DEĞİŞTİRDİK ---
+        // _rigidbody.linearVelocity = Vector2.zero; // Aniden durmasını engelledik
+        // _rigidbody.simulated = false; // Fizik motorunu hemen kapatma
+        
         if (_animator != null)
         {
             _animator.SetBool("isDead", true);
@@ -169,6 +183,10 @@ public class EnemyController : MonoBehaviour, IDamageable
         if (_collider != null) _collider.enabled = false;
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses"; 
+        if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses";
+
+        // Enemylerin hepsinin sıralama sırası (sorting order) 0 olduğu için (sorting layer değil),
+        // üst üste binebilmesi için sürekli SpriteRenderer'ın component'ını alıyoruz (Awake'de tek bir metodda almak yerine).
+
     }
 }

@@ -47,8 +47,11 @@ TagManager:
   - name: Corpses
     uniqueID: 88733255
     locked: 0
-  - name: Particles
+  - name: BloodParticles
     uniqueID: 4055613071
+    locked: 0
+  - name: StunnedEntities
+    uniqueID: 2515959703
     locked: 0
   - name: GroundItems
     uniqueID: 1469565079
@@ -64,6 +67,9 @@ TagManager:
     locked: 0
   - name: Obstacle
     uniqueID: 1782920035
+    locked: 0
+  - name: HitParticles
+    uniqueID: 1359891977
     locked: 0
   m_RenderingLayers:
   - Default
