@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: RustyFloorTiles_4
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 1616223818830938365, guid: f3cbed2d57f131546b82cb0dd6535ca6, type: 3}
-  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+  m_Sprite: {fileID: 990257463665803454, guid: 96110e0ef1f0c9b4586ab31260678ab8, type: 3}
+  m_Color: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
   m_Transform:
     e00: 1
     e01: 0

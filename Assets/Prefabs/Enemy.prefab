@@ -109,12 +109,12 @@ SpriteRenderer:
   m_SortingLayerID: 23645611
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: -7182570291387071326, guid: f5d2014e1b09f2f4bb0e9ef02a07c2c9, type: 3}
+  m_Sprite: {fileID: -8291332667507703565, guid: 5388935e6d2c2f444a7e7ce56712ef2e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.15, y: 0.7}
+  m_Size: {x: 0.76666665, y: 0.46666667}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e6f216c2e5bd8498581dc23a49db0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAwarenessDistance: 3
+  _playerAwarenessDistance: 5
   _chaseSpeed: 5
   _patrolSpeed: 3
   _rotationSpeed: 500

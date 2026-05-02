@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerAwarenessController))]
 public class EnemyController : MonoBehaviour, IDamageable
 {
+
     // Bileşenler
     private Rigidbody2D _rigidbody;
     private PlayerAwarenessController _playerAwarenessController;
@@ -20,8 +21,11 @@ public class EnemyController : MonoBehaviour, IDamageable
     // Finish Değişkenleri
     public bool IsBeingFinished { get; private set; } = false;
 
+    private Collider2D _collider;
+
     private void Awake()
     {
+        _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _playerAwarenessController = GetComponent<PlayerAwarenessController>();
         _animator = GetComponent<Animator>();
@@ -77,22 +81,20 @@ public class EnemyController : MonoBehaviour, IDamageable
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
     }
-
     public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
     {
         if (!this.enabled) return;
 
-        //// Ön taraftaki kan efekti
-        //float frontAngle = Mathf.Atan2(-hitDirection.y, -hitDirection.x) * Mathf.Rad2Deg;
-        //EffectPool.Instance.SpawnEffect("FrontBlood", hitPoint, Quaternion.Euler(0, 0, frontAngle));
-
         _playerAwarenessController.SetAgentEnabled(false);
 
-        // Arka taraftaki kan efekti
         Vector2 enemyCenter = GetComponent<Collider2D>().bounds.center;
-        Vector2 backPoint = enemyCenter + (hitDirection * 0.4f);
+        Vector2 backPoint = enemyCenter;
+
         float backAngle = Mathf.Atan2(hitDirection.y, hitDirection.x) * Mathf.Rad2Deg;
-        EffectPool.Instance.SpawnEffect("BackBlood", backPoint, Quaternion.Euler(0, 0, backAngle));
+
+        Quaternion bloodRotation = Quaternion.Euler(0f, 0f, backAngle);
+
+        EffectPool.Instance.SpawnEffect("BackBlood", backPoint, bloodRotation);
 
         Die();
     }
@@ -163,8 +165,8 @@ public class EnemyController : MonoBehaviour, IDamageable
             }
         }
 
-        Collider2D collider = GetComponent<Collider2D>();
-        if (collider != null) collider.enabled = false;
+        
+        if (_collider != null) _collider.enabled = false;
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses"; 

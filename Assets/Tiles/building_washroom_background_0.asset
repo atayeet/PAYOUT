@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: building_washroom_background_0
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 4604786917759886275, guid: 0d7d4cf2df40947439f90e8c0e107c68, type: 3}
-  m_Color: {r: 0.5849056, g: 0.5849056, b: 0.55510855, a: 1}
+  m_Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
   m_Transform:
     e00: 1
     e01: 0

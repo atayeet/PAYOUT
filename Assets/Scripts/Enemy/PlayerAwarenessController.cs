@@ -105,7 +105,7 @@ public class PlayerAwarenessController : MonoBehaviour
             FindPatrolPointsInCurrentRoom(); // Player'ý kaybettiði yerdeki ("yeni" odadaki) noktalarý tarar.
         }
     }
-
+    
     private void ExecuteCurrentState()
     {
         if (_currentState == EnemyState.Chase)
@@ -144,11 +144,12 @@ public class PlayerAwarenessController : MonoBehaviour
             if (distance <= _roomSearchRadius) // Sadece belli bir yarýçaptakileri kontrol et
             {
                 // Arada engel (Obstacle) yoksa listeye dahil et
-                RaycastHit2D hit = Physics2D.Linecast(transform.position, point.transform.position, LayerMask.GetMask("Obstacle"));
-                
+                RaycastHit2D hit = Physics2D.Linecast(transform.position, point.transform.position, LayerMask.GetMask("Obstacle", "Door"));
+
                 if (hit.collider == null)
                 {
                     _currentPatrolPoints.Add(point.transform);
+
                 }
             }
         }
@@ -181,5 +182,38 @@ public class PlayerAwarenessController : MonoBehaviour
     public Vector2 GetAgentVelocity()
     {
         return _agent != null ? (Vector2)_agent.velocity : Vector2.zero;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // 1. Oyuncuyu Fark Etme (Awareness) Alaný - Kýrmýzý Çember
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _playerAwarenessDistance);
+
+        // 2. Devriye Noktalarýný Tarama Alaný (Room Search) - Mavi Çember
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, _roomSearchRadius);
+
+        // Eðer oyun çalýþýyorsa hedeflere doðru çizgiler çiz
+        if (Application.isPlaying)
+        {
+            // Kovalama Modu: Oyuncuya sarý bir çizgi çeker
+            if (_currentState == EnemyState.Chase && _playerTransform != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(transform.position, _playerTransform.position);
+            }
+            // Devriye Modu: Gittiði hedefe yeþil bir çizgi çeker
+            else if (_currentState == EnemyState.Patrol && _currentPatrolPoints.Count > 0)
+            {
+                Transform targetPoint = _currentPatrolPoints[_currentPatrolIndex];
+                if (targetPoint != null)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawLine(transform.position, targetPoint.position);
+                    Gizmos.DrawWireSphere(targetPoint.position, 0.3f); // Hedef noktayý da küçük bir topla belirginleþtir
+                }
+            }
+        }
     }
 }
