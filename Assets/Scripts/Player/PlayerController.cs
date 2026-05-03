@@ -52,13 +52,17 @@ public class PlayerController : MonoBehaviour
     private bool _isPunching = false; 
     private float _punchEndTime = 0f;
 
+    private VirtualCursor _virtualCursor;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _mainCamera = Camera.main; 
-        
-        // Weapon objesi Torso'nun altında olmalı
+
         weapon = GetComponentInChildren<Weapon>(true); 
+
+        // Crosshair'i sahnede bul (Awake icine ekle)
+        _virtualCursor = Object.FindFirstObjectByType<VirtualCursor>(); 
     }
 
     private void Start()
@@ -146,13 +150,10 @@ public class PlayerController : MonoBehaviour
 
     private void RotateTorsoTowardsMouse()
     {
-        if (Mouse.current != null)
+        if (_virtualCursor != null)
         {
-            Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-            Vector3 mouseWorldPosition = _mainCamera.ScreenToWorldPoint(mouseScreenPosition);
-            
-            // Torso farenin yönüne bakar
-            Vector2 lookDirection = mouseWorldPosition - _torsoTransform.position;
+            // Artık direkt VirtualCursor objesine bakacak (Ekrana değil, dünyaya)
+            Vector2 lookDirection = _virtualCursor.transform.position - _torsoTransform.position;
             float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
             
             _torsoTransform.rotation = Quaternion.Euler(0, 0, angle + _rotationOffset);

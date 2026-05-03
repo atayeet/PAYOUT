@@ -71,5 +71,8 @@ TagManager:
   - name: HitParticles
     uniqueID: 1359891977
     locked: 0
+  - name: Crosshair
+    uniqueID: 3428329725
+    locked: 0
   m_RenderingLayers:
   - Default

@@ -75,27 +75,34 @@ public class PauseMenuManager : MonoBehaviour
     public void Resume()
     {
         if (_pauseMenuUI != null) _pauseMenuUI.SetActive(false);
-        Time.timeScale = 1f;  // Oyun zamanýný tekrar baþlat
+        Time.timeScale = 1f;  
         GameIsPaused = false;
+
+        // Fareyi oyuna geri gizle
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void Pause()
     {
         if (_pauseMenuUI != null) _pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;  // Oyun zamanýný dondur
+        Time.timeScale = 0f;  
         GameIsPaused = true;
-    }
 
-    public void OpenSettings()
-    {
-        Debug.Log("Ayarlar menüsü açýldý (Yapým aþamasýnda).");
+        // Fareyi görünür ve serbest yap (Menü kullanýmý için)
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void LoadMainMenu()
     {
-        // Ana menüye dönerken zamaný tekrar normal hýzýna döndürmek ZORUNLUDUR!
         Time.timeScale = 1f;
         GameIsPaused = false;
-        SceneManager.LoadScene("MainMenu"); // Ana menü sahnenizin adý
+
+        // Ana menüye dönerken fare imlecini serbest býrak
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        SceneManager.LoadScene("MainMenu"); 
     }
 }
