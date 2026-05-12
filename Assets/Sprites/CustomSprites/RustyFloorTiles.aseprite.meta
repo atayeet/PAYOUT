@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 37.5
+    spritePixelsToUnits: 48
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639127495114204934
+  platformSettingsDirtyTick: 639138781748241402
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -147,7 +147,7 @@ ScriptedImporter:
   spriteSheetImportData:
   - name: RustyFloorTiles_0
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -155,8 +155,8 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: baf3b1a4c4e12e0469bb4ddd36f29f78
     spriteBone: []
     spriteOutline: []
@@ -168,16 +168,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_1
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
+      x: 61
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: 527cf4a8ff6bf984ab536d360587730a
     spriteBone: []
     spriteOutline: []
@@ -189,16 +189,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_2
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 100
+      x: 118
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: 9e2c492e3acb91348bfbf4c16e082e97
     spriteBone: []
     spriteOutline: []
@@ -210,16 +210,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_3
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 148
+      x: 176
       y: 4
-      width: 40
-      height: 40
+      width: 47
+      height: 48
     spriteID: 11e97b5cd13740642b4098237d6935e8
     spriteBone: []
     spriteOutline: []
@@ -231,16 +231,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_4
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 196
+      x: 233
       y: 4
-      width: 40
-      height: 40
+      width: 47
+      height: 48
     spriteID: 92e2a004bcd64da449535b46e4df6120
     spriteBone: []
     spriteOutline: []
@@ -252,16 +252,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_5
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 244
+      x: 290
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: 24b2c2010441c8f49a03513c87c5f8ce
     spriteBone: []
     spriteOutline: []
@@ -273,16 +273,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_6
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 292
+      x: 347
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: 2b0643f551be7854485bd21844c068b2
     spriteBone: []
     spriteOutline: []
@@ -294,16 +294,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: RustyFloorTiles_7
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 340
+      x: 404
       y: 4
-      width: 40
-      height: 40
+      width: 48
+      height: 48
     spriteID: 8436de088b481384d953275117011cba
     spriteBone: []
     spriteOutline: []
@@ -331,9 +331,9 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 16
-        y: 44
-        width: 376
-        height: 40
+        y: 36
+        width: 448
+        height: 48
       spriteId: ffa8a793eba121544a8004d04d6457b5
     linkedCells: []
     parentIndex: -1
@@ -377,5 +377,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 400, y: 100}
+  canvasSize: {x: 600, y: 100}
   previousTextureSize: {x: 512, y: 64}

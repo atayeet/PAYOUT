@@ -12,19 +12,21 @@ public class PlayerAwarenessController : MonoBehaviour
 
     [Header("Awareness")]
     [SerializeField] private float _playerAwarenessDistance = 10f;
-    [Tooltip("Düþmanýn görüþünü engelleyecek katmanlar (Örn: Obstacle, Door)")]
-    //[SerializeField] private LayerMask _obstacleLayerMask; // Yeni eklenen LayerMask
+    [SerializeField] private float _shootingRange = 7f; // Ateþ menzili eklendi!
 
-    // Diðer deðiþkenleriniz ayný kalýyor...
     [Header("Movement & Rotation")]
     [SerializeField] private float _chaseSpeed = 3.5f;
     [SerializeField] private float _patrolSpeed = 1.5f;
+    [SerializeField] private float _fleeSpeed = 4f; // Kaçma Hýzý eklendi!
     [SerializeField] private float _rotationSpeed = 500f;
     [SerializeField] private float _rotationOffset = 0f;
 
     [Header("Patrol Settings")]
     [SerializeField] private float _patrolPointThreshold = 0.5f;
     [SerializeField] private float _roomSearchRadius = 20f;
+    
+    [Header("Behavior Settings")]
+    [SerializeField] private bool _isStationary = false; 
 
     private Transform _playerTransform;
     private float _sqrPlayerAwarenessDistance;
@@ -32,18 +34,22 @@ public class PlayerAwarenessController : MonoBehaviour
     private NavMeshAgent _agent;
     private Rigidbody2D _rigidbody;
     private PlayerController _playerController;
+    private EnemyController _enemyController;
 
-    private enum EnemyState { Patrol, Chase }
-    private EnemyState _currentState = EnemyState.Patrol;
+    private enum EnemyState { Idle, Patrol, Chase, SearchWeapon, Flee } 
+    private EnemyState _currentState; 
+    
     private List<Transform> _currentPatrolPoints = new List<Transform>();
     private int _currentPatrolIndex;
+    
+    private GameObject _targetDroppedWeapon; // Aranýlan yerdeki silah
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        _enemyController = GetComponent<EnemyController>(); // EKLENDÝ
 
-        // NavMeshAgent ve 2D Ayarlarý
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
         _agent.speed = _patrolSpeed;
@@ -53,12 +59,22 @@ public class PlayerAwarenessController : MonoBehaviour
         if (pc != null) 
         {
             _playerTransform = pc.transform;
-            _playerController = pc; // Oyuncuya daha pratik ulaþým için
+            _playerController = pc; 
         }
 
         _sqrPlayerAwarenessDistance = _playerAwarenessDistance * _playerAwarenessDistance;
 
         FindPatrolPointsInCurrentRoom();
+
+        if (_isStationary)
+        {
+            _currentState = EnemyState.Idle; 
+            _agent.isStopped = true; 
+        }
+        else
+        {
+            _currentState = EnemyState.Patrol; 
+        }
     }
 
     private void Update()
@@ -74,7 +90,6 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void CheckPlayerAwareness()
     {
-        // Oyuncu öldüyse veya referansý uçtuysa kovalamayý sonlandýr - SÝZÝ YAKALAMASIN
         if (_playerTransform == null || (_playerController != null && _playerController.IsDead)) 
         {
             AwareOfPlayer = false;
@@ -85,11 +100,8 @@ public class PlayerAwarenessController : MonoBehaviour
 
         if (enemyToPlayerVector.sqrMagnitude <= _sqrPlayerAwarenessDistance)
         {
-            // Görüþ Açýsý Kontrolü (Line of Sight)
-            // Düþmandan oyuncuya bir çizgi (Linecast) çeker, engele çarpýp çarpmadýðýna bakar
             RaycastHit2D hit = Physics2D.Linecast(transform.position, _playerTransform.position, LayerMask.GetMask("Obstacle", "Door"));
 
-            // Eðer aradaki çizgi belirtilen LayerMask'teki bir þeye çarpmamýþsa (hit.collider yoksa) oyuncuyu görür
             if (hit.collider == null)
             {
                 AwareOfPlayer = true;
@@ -97,7 +109,6 @@ public class PlayerAwarenessController : MonoBehaviour
             }
             else
             {
-                // Arada duvar vb. bir engel var ise oyuncuyu duymaz/görmez
                 AwareOfPlayer = false;
             }
         }
@@ -109,26 +120,118 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void HandleStateTransitions()
     {
-        // Player'ý Görürse -> Kovalamaya Geç
-        if (AwareOfPlayer && _currentState != EnemyState.Chase)
+        // 1. Silahsýzsa Silahý Arama veya Kaçma Davranýþý (FLEE / SEARCH WEAPON)
+        if (!_enemyController.HasWeapon)
+        {
+            TryFindNearestDroppedWeapon();
+            
+            if (_targetDroppedWeapon != null)
+            {
+                _currentState = EnemyState.SearchWeapon; // Silah bulunduysa ona koþ
+            }
+            else if (AwareOfPlayer)
+            {
+                _currentState = EnemyState.Flee; // Silah yoksa ve Player yakýnsa kaç
+            }
+            else
+            {
+                _currentState = EnemyState.Idle; // Oyuncu yok silah da yok öylece bekle
+            }
+        }
+        // 2. Silahý Varsa ve Player Görülüyorsa -> CHASE
+        else if (AwareOfPlayer && _currentState != EnemyState.Chase)
         {
             _currentState = EnemyState.Chase;
         }
-        // Player'ý Kaybederse -> Hemen Devriyeye Dön
+        // 3. Player'ý Kaybettiyse Normal Devriyeye Dön
         else if (!AwareOfPlayer && _currentState == EnemyState.Chase)
         {
-            _currentState = EnemyState.Patrol;
-            FindPatrolPointsInCurrentRoom(); // Player'ý kaybettiði yerdeki ("yeni" odadaki) noktalarý tarar.
+            _currentState = _isStationary ? EnemyState.Idle : EnemyState.Patrol;
+            if (!_isStationary) FindPatrolPointsInCurrentRoom(); 
         }
     }
     
+    private void TryFindNearestDroppedWeapon()
+    {
+        Collider2D[] foundItems = Physics2D.OverlapCircleAll(transform.position, _roomSearchRadius);
+        float closestDistance = Mathf.Infinity;
+        GameObject closestWeapon = null;
+
+        foreach (Collider2D item in foundItems)
+        {
+            if (item.GetComponent<DropPistol>() != null) // Yerdeki silah mý?
+            {
+                // Silaha doðru arada baþka bloklayýcý duvar var mý kontrol et
+                RaycastHit2D hit = Physics2D.Linecast(transform.position, item.transform.position, LayerMask.GetMask("Obstacle", "Door"));
+                if (hit.collider == null)
+                {
+                    float distance = Vector2.Distance(transform.position, item.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestWeapon = item.gameObject;
+                    }
+                }
+            }
+        }
+        _targetDroppedWeapon = closestWeapon;
+    }
+
     private void ExecuteCurrentState()
     {
-        if (_currentState == EnemyState.Chase)
+        if (_currentState == EnemyState.Idle)
         {
-            _agent.speed = _chaseSpeed; // Kovalama hýzýna geç
+            _agent.isStopped = true; 
+        }
+        else if (_currentState == EnemyState.Chase)
+        {
+            _agent.speed = _chaseSpeed; 
             _agent.isStopped = false;
-            if (_playerTransform != null) _agent.SetDestination(_playerTransform.position);
+            
+            if (_playerTransform != null) 
+            {
+                float distanceToPlayer = Vector2.Distance(transform.position, _playerTransform.position);
+                
+                // Oyuncu menzildeyse durup ateþ et
+                if (distanceToPlayer <= _shootingRange)
+                {
+                    _agent.isStopped = true; 
+                    _enemyController.FireWeapon(); // ATEÞ ET
+                }
+                else
+                {
+                    _agent.isStopped = false;
+                    _agent.SetDestination(_playerTransform.position);
+                }
+            }
+        }
+        else if (_currentState == EnemyState.SearchWeapon)
+        {
+            if (_targetDroppedWeapon == null) return; // Baþkasý almýþ veya kaybolmuþ olabilir
+
+            _agent.speed = _chaseSpeed; 
+            _agent.isStopped = false;
+            _agent.SetDestination(_targetDroppedWeapon.transform.position);
+
+            // Silaha yeterince yakýnsa al
+            if (Vector2.Distance(transform.position, _targetDroppedWeapon.transform.position) <= 1.5f)
+            {
+                _enemyController.EquipWeapon(_targetDroppedWeapon);
+                _targetDroppedWeapon = null; 
+            }
+        }
+        else if (_currentState == EnemyState.Flee)
+        {
+            _agent.speed = _fleeSpeed; 
+            _agent.isStopped = false;
+
+            if (_playerTransform != null)
+            {
+                // Oyuncunun tersi yönünü hesapla ve oraya koþ
+                Vector3 fleeDirection = (transform.position - _playerTransform.position).normalized;
+                Vector3 fleeTarget = transform.position + fleeDirection * 5f;
+                _agent.SetDestination(fleeTarget);
+            }
         }
         else if (_currentState == EnemyState.Patrol)
         {
@@ -179,10 +282,18 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void RotateTowardsMovement()
     {
-        Vector2 targetDir = _agent.desiredVelocity;
-
-        if (targetDir.sqrMagnitude > 0.01f)
+        // 1. DURUM: Kovalama modunda ve ateþ etmek için durmuþsak direkt oyuncuya dön
+        if (_currentState == EnemyState.Chase && _agent.isStopped && _playerTransform != null)
         {
+            Vector2 targetDir = (_playerTransform.position - transform.position).normalized;
+            float angle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg;
+            float newAngle = Mathf.MoveTowardsAngle(_rigidbody.rotation, angle + _rotationOffset, _rotationSpeed * Time.deltaTime);
+            _rigidbody.SetRotation(newAngle);
+        }
+        // 2. DURUM: Normal hareket ediyorsa NavMesh'in hareket yönüne dön
+        else if (_agent.desiredVelocity.sqrMagnitude > 0.01f)
+        {
+            Vector2 targetDir = _agent.desiredVelocity;
             float angle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg;
             float newAngle = Mathf.MoveTowardsAngle(_rigidbody.rotation, angle + _rotationOffset, _rotationSpeed * Time.deltaTime);
             _rigidbody.SetRotation(newAngle);

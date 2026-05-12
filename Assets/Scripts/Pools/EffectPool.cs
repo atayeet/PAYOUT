@@ -62,4 +62,14 @@ public class EffectPool : MonoBehaviour
 
         return obj;
     }
+
+    public void ClearAllEffects()
+    {
+        // Pool objesinin altýndaki tüm açýk çocuk objeleri (Kan/parça vb.) kapatýr.
+        // Scriptinizdeki mantýk bunlarý listeye halihazýrda eklediði için SetActive(false) güvenlidir.
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+    }
 }

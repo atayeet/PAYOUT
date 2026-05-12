@@ -15,6 +15,12 @@ public class EnemyController : MonoBehaviour, IDamageable
     [Tooltip("Mermi yediğinde ne kadar geriye savrulacak?")]
     [SerializeField] private float _bulletKnockbackForce = 500f; // Mermi savrulma gücünü Inspector'a taşıdık
 
+    [Header("Weapon Settings")]
+    public bool HasWeapon = true;
+    [SerializeField] private Weapon _weapon; // Enemy'nin child objesi olan Weapon
+    [SerializeField] private GameObject _dropPistolPrefab; // Yere düşecek tabanca prefabı
+    [SerializeField] private Transform _weaponDropPoint; // Silahın düşeceği nokta (Eli vb.)
+
     // Stun Değişkenleri
     private bool _isStunned = false; 
     private float _stunTimer = 0f;
@@ -36,6 +42,10 @@ public class EnemyController : MonoBehaviour, IDamageable
 
         _originalLayer = gameObject.layer;
         _stunnedLayer = LayerMask.NameToLayer("StunnedEntities");
+
+        // Başlangıçta silahı ayarlama
+        if (_weapon != null) _weapon.gameObject.SetActive(HasWeapon);
+
     }
 
     private void Update()
@@ -67,11 +77,18 @@ public class EnemyController : MonoBehaviour, IDamageable
         
         _animator.SetBool("isMoving", isMoving);
         _animator.SetBool("isStunned", _isStunned);
+        _animator.SetBool("hasWeapon", HasWeapon); // ANİMATÖR BAĞLANTISI YAPILDI
     }
 
     public void Stun(Vector2 knockbackDir, float knockbackForce)
     {
-        if (!this.enabled || _isStunned) return; 
+        if (!this.enabled || _isStunned) return;
+
+        // STUN YEDİĞİNDE SİLAHI VARSA DÜŞÜR!
+        if (HasWeapon)
+        {
+            DropWeapon(knockbackDir);
+        }
 
         _isStunned = true;
         _playerAwarenessController.IsStunned = true; // YZ Hareketini durdur
@@ -89,6 +106,50 @@ public class EnemyController : MonoBehaviour, IDamageable
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "StunnedEntities";
 
     }
+
+    public void DropWeapon(Vector2 fallDirection)
+    {
+        HasWeapon = false;
+        if (_weapon != null) _weapon.gameObject.SetActive(false); // Kendi silahını gizle
+
+        if (_dropPistolPrefab != null && _weaponDropPoint != null)
+        {
+            GameObject droppedPistol = Instantiate(_dropPistolPrefab, _weaponDropPoint.position, transform.rotation);
+            DropPistol script = droppedPistol.GetComponent<DropPistol>();
+
+            if (script != null)
+            {
+                // Silahı arkaya/yana doğru havaya fırlat
+                script.Throw(-fallDirection + (Vector2)Random.insideUnitCircle * 0.5f, 4f);
+            }
+        }
+    }
+
+    // Yerdeki silahı aldığında çalışacak fonksiyon
+    public void EquipWeapon(GameObject droppedPistolObj)
+    {
+        HasWeapon = true;
+        if (_weapon != null) _weapon.gameObject.SetActive(true);
+        Destroy(droppedPistolObj); // Yerdeki DropPistol objesini yok et
+    }
+
+    // Ateş etme (PlayerAwarenessController tarafından çağrılır)
+    public void FireWeapon()
+    {
+        if (HasWeapon && _weapon != null)
+        {
+            // Silah gerçekten ateş edebildiyse animasyonu oynat
+            if (_weapon.TryFire()) 
+            {
+                if (_animator != null)
+                {
+                    // Artık zorla Play() kullanmak yerine Trigger tetikliyoruz
+                    _animator.SetTrigger("shoot"); 
+                }
+            }
+        }
+    }
+
     public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
     {
         if (!this.enabled) return;
@@ -149,6 +210,20 @@ public class EnemyController : MonoBehaviour, IDamageable
     // Die fonksiyonuna isteğe bağlı bir parametre ekledik
     public void Die(bool isFinisherDeath = false)
     {
+        if (!this.enabled) return; // Çift işlem yapmasını engelleme
+
+        // YENİ EKLENEN: Düşman ölüyor, elinde silah varsa düşürsün.
+        if (HasWeapon)
+        {
+            // Ölürken rastgele hafif bir fırlatma yönüyle silahı yere düşür
+            DropWeapon(Random.insideUnitCircle.normalized);
+        }
+
+        if (LevelManager.Instance != null) 
+        {
+            LevelManager.Instance.OnEnemyDied();
+        }
+
         this.enabled = false;
         
         if (_playerAwarenessController != null) 
@@ -179,14 +254,9 @@ public class EnemyController : MonoBehaviour, IDamageable
             }
         }
 
-        
         if (_collider != null) _collider.enabled = false;
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses";
-
-        // Enemylerin hepsinin sıralama sırası (sorting order) 0 olduğu için (sorting layer değil),
-        // üst üste binebilmesi için sürekli SpriteRenderer'ın component'ını alıyoruz (Awake'de tek bir metodda almak yerine).
-
     }
 }

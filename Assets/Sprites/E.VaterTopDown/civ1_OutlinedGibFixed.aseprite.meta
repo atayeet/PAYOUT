@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639127489896975327
+  platformSettingsDirtyTick: 639138805950110526
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -154,7 +154,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 90
+      y: 184
       width: 25
       height: 16
     spriteID: 26af221875c1cf74db3fd7d3660d0534
@@ -175,7 +175,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 68
-      y: 88
+      y: 182
       width: 25
       height: 22
     spriteID: fc6256d871d24184eae3b48326337778
@@ -196,7 +196,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 132
-      y: 86
+      y: 180
       width: 25
       height: 26
     spriteID: fed46d74c979eea4a90e987bb1ae9c17
@@ -217,7 +217,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 196
-      y: 84
+      y: 178
       width: 25
       height: 28
     spriteID: 8f72bf76b1835164cb8b1377444b7e2a
@@ -238,7 +238,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 260
-      y: 86
+      y: 180
       width: 25
       height: 26
     spriteID: fad1a275e0671a4459659f4757b3155e
@@ -259,7 +259,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 324
-      y: 88
+      y: 182
       width: 25
       height: 22
     spriteID: 7c2d0e5ac0acd074eb3a6caec547a8c0
@@ -280,7 +280,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 388
-      y: 90
+      y: 184
       width: 25
       height: 16
     spriteID: f508c94f841c91f4d9b7e731f0f67b86
@@ -301,7 +301,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 452
-      y: 88
+      y: 182
       width: 25
       height: 22
     spriteID: 3675bbf194ee7bc44bf2391eaea2fa54
@@ -322,7 +322,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 516
-      y: 85
+      y: 179
       width: 25
       height: 27
     spriteID: 8f353ce82971b734b8edbf2ae58b4365
@@ -343,7 +343,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 580
-      y: 84
+      y: 178
       width: 25
       height: 28
     spriteID: 73011cb94d00cc6448de12cb29bde2a1
@@ -364,9 +364,9 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 644
-      y: 85
+      y: 179
       width: 25
-      height: 26
+      height: 27
     spriteID: 023e17ed3659ed148a5160ad8d69204c
     spriteBone: []
     spriteOutline: []
@@ -385,7 +385,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 708
-      y: 88
+      y: 182
       width: 25
       height: 22
     spriteID: b21a5900c1a856845a7add40f90d36ee
@@ -406,7 +406,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 6
-      y: 6
+      y: 100
       width: 25
       height: 56
     spriteID: 95b1768aca36b8c4f9c12303d18edb6f
@@ -427,7 +427,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 70
-      y: 6
+      y: 100
       width: 25
       height: 60
     spriteID: 16bea708c6ca4724099fa4126a8fe14b
@@ -448,7 +448,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 135
-      y: 6
+      y: 100
       width: 24
       height: 56
     spriteID: a339f38874d1b244ca592d4b3c4dd081
@@ -469,7 +469,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 199
-      y: 6
+      y: 100
       width: 24
       height: 60
     spriteID: a4af8deb9824d664691fb147444977fa
@@ -490,7 +490,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 259
-      y: 4
+      y: 98
       width: 28
       height: 62
     spriteID: 5e97555aeed268b4195e2305d9fed8fb
@@ -511,7 +511,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 323
-      y: 4
+      y: 98
       width: 28
       height: 62
     spriteID: 07d9c5aa5bdd93f42bd895bca07524f4
@@ -532,7 +532,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 390
-      y: 11
+      y: 105
       width: 28
       height: 56
     spriteID: ca9d47afb0de09240b3f2d5652fa463a
@@ -553,7 +553,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 454
-      y: 11
+      y: 105
       width: 28
       height: 58
     spriteID: 86bdf7af300161a4a98176b8934d4b0f
@@ -574,7 +574,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 515
-      y: 4
+      y: 98
       width: 24
       height: 55
     spriteID: 7094cce631cb2814981a38ac4885f155
@@ -595,7 +595,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 575
-      y: 4
+      y: 98
       width: 32
       height: 59
     spriteID: 787945c27b23f7a488552da73ff5aa60
@@ -616,7 +616,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 641
-      y: 4
+      y: 98
       width: 28
       height: 62
     spriteID: e83e59dbbd58c1f469b8c1841eeaa96f
@@ -637,10 +637,472 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 703
-      y: 4
+      y: 98
       width: 32
       height: 59
     spriteID: 11962ee0759dc60428e07c95d073b191
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_24
+    originalName: 
+    pivot: {x: 0.5, y: 0.56}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 72
+      width: 25
+      height: 14
+    spriteID: 0ae95ca274bd19a4ead240a2a236b9ee
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_25
+    originalName: 
+    pivot: {x: 0.5, y: 0.56}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 36
+      y: 72
+      width: 25
+      height: 14
+    spriteID: 596c6b4b29b325e4facb4ffc95ac168e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_26
+    originalName: 
+    pivot: {x: 0.5, y: 0.56}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 69
+      y: 72
+      width: 23
+      height: 14
+    spriteID: d2e93879036dff14aafe7c1c6296c10c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_27
+    originalName: 
+    pivot: {x: 0.5, y: 0.56}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 100
+      y: 72
+      width: 25
+      height: 14
+    spriteID: f2c397518f38c964bb20ec82b2d94b3e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_28
+    originalName: 
+    pivot: {x: 0.5, y: 0.56}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 72
+      width: 25
+      height: 14
+    spriteID: b20e92fe4be72c34fbe9a404802ec11d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_29
+    originalName: 
+    pivot: {x: 0.5, y: 0.27}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 58
+      width: 25
+      height: 30
+    spriteID: 0ad18302d81a70d4182f5b870ae94c5c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_30
+    originalName: 
+    pivot: {x: 0.5, y: 0.27}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 58
+      width: 25
+      height: 30
+    spriteID: 22da898433a9954479bf9f023667753e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_31
+    originalName: 
+    pivot: {x: 0.5, y: 0.27}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 228
+      y: 58
+      width: 25
+      height: 30
+    spriteID: 0cd1ffc13e5768847a67731b97d1d43d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_32
+    originalName: 
+    pivot: {x: 0.5, y: 0.27}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 260
+      y: 58
+      width: 25
+      height: 30
+    spriteID: 2876a76872edf2e4591b13f179fc40d2
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_33
+    originalName: 
+    pivot: {x: 0.5, y: 0.27}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 292
+      y: 58
+      width: 25
+      height: 30
+    spriteID: b91f278a01dc0ef44b4d75241f676b00
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_34
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 708
+      y: 56
+      width: 25
+      height: 32
+    spriteID: 0a85814323e4a3b429f13853c5a60a34
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_35
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 4
+      width: 25
+      height: 36
+    spriteID: e1d4eaa1b1cce8648a453fb918c50aea
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_36
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 36
+      y: 4
+      width: 25
+      height: 36
+    spriteID: d473ddf7ec55fbc4881f878be54532de
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_37
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 68
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 732db2d928da271498815a314d162210
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_38
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 100
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 6035cbfd3ff6396479f3b1b27807bdc7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_39
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 132
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 2d810a9bc4a82ad44885f29849ade653
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_40
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 4
+      width: 25
+      height: 36
+    spriteID: c9fcfe332ad75a349bf555870c1a2561
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_41
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 4
+      width: 25
+      height: 36
+    spriteID: f2e7e4c3ecd221b4a83d9502c14cbbde
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_42
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 228
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 39adfe640f222874b830a8c8a4251dba
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_43
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 260
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 6a233295555748a45bc0c1c7c654e138
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_44
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 292
+      y: 4
+      width: 25
+      height: 36
+    spriteID: 1a1c8f586b561d84fbe9611f841975cf
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: civ1_OutlinedGibFixed_45
+    originalName: 
+    pivot: {x: 0.5, y: 0.38}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 324
+      y: 4
+      width: 25
+      height: 36
+    spriteID: d88f0483a6640844d9a02eb821186c29
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -667,9 +1129,9 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 19
-        y: 0
+        y: 34
         width: 731
-        height: 108
+        height: 202
       spriteId: 7cf4d290de28f2a41af0ac24da752995
     linkedCells: []
     parentIndex: -1
@@ -713,5 +1175,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 768, y: 128}
-  previousTextureSize: {x: 1024, y: 128}
+  canvasSize: {x: 768, y: 256}
+  previousTextureSize: {x: 1024, y: 256}

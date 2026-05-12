@@ -33,7 +33,7 @@ public class DropPistol : MonoBehaviour
         }
 
         // Kendi etrafýnda dönme kuvveti (torque) uygula
-        _rb.AddForce(direction.normalized * force, ForceMode2D.Impulse);
+        _rb.AddForce(direction.normalized * force * 1.5f, ForceMode2D.Impulse);
         _rb.AddTorque(_spinSpeed * (Random.value > 0.5f ? 1f : -1f));
     }
 

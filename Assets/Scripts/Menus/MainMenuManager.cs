@@ -5,8 +5,8 @@ public class MainMenuManager : MonoBehaviour
 {
     public void PlayGame()
     {
-        // "GameScene" sahnesini yükler. Ýsmi tam eþleþmeli.
-        SceneManager.LoadScene("GameScene");
+        // CoreScene'i yükler
+        SceneManager.LoadScene("CoreScene");
     }
 
     public void OpenSettings()

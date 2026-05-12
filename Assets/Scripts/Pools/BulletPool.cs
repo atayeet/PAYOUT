@@ -80,4 +80,19 @@ public class BulletPool : MonoBehaviour
             Debug.LogWarning("Bullet pool is already full! Cannot return bullet.");
         }
     }
+
+    public void ClearAllBullets()
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.activeSelf)
+            {
+                Bullet bullet = child.GetComponent<Bullet>();
+                if (bullet != null)
+                {
+                    ReturnBullet(bullet); // Sahneden geçiş esnasında havada mermi varsa geri alır
+                }
+            }
+        }
+    }
 }

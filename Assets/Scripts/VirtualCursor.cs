@@ -7,7 +7,7 @@ public class VirtualCursor : MonoBehaviour
     [SerializeField] private float _mouseSensitivity = 1.0f; // Farenin dünya hareket hassasiyeti
     [SerializeField] private float _maxAimDistance = 7f;     // İmlecin oyuncudan ne kadar uzaklaşabileceği
 
-    [Header("Hotline Miami Camera Settings")]
+    [Header("Camera Settings")]
     [SerializeField] private bool _enableDynamicCamera = true;
     [SerializeField] private float _cameraFollowSpeed = 5f;
     [SerializeField] private float _cameraMaxDistance = 4f; 

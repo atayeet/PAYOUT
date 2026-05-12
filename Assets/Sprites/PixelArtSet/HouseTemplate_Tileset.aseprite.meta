@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 21
+    spritePixelsToUnits: 16
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639131442873157929
+  platformSettingsDirtyTick: 639138789011918089
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -147,14 +147,14 @@ ScriptedImporter:
   spriteSheetImportData:
   - name: HouseTemplate_Tileset_0
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 4
-      y: 90
+      y: 84
       width: 144
       height: 48
     spriteID: f14cdece41e8a15468c8c72d4abd42a3
@@ -168,14 +168,14 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_1
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 4
-      y: 58
+      y: 52
       width: 16
       height: 16
     spriteID: 0b04096cea8e4e445a0e25b37f856d31
@@ -189,16 +189,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_2
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 47
-      y: 58
+      y: 52
       width: 5
-      height: 23
+      height: 16
     spriteID: c59bd9f16f0de4444ab61ef838533a84
     spriteBone: []
     spriteOutline: []
@@ -210,16 +210,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_3
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 63
-      y: 58
+      y: 52
       width: 5
-      height: 23
+      height: 16
     spriteID: a4537287ac29078409b0f338eb8c33ff
     spriteBone: []
     spriteOutline: []
@@ -231,16 +231,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_4
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
-      x: 84
-      y: 42
-      width: 48
-      height: 32
+      x: 100
+      y: 52
+      width: 16
+      height: 16
     spriteID: d83fc37f72c763d43ae82bfa7519d24a
     spriteBone: []
     spriteOutline: []
@@ -252,16 +252,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_5
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 4
-      y: 32
+      y: 36
       width: 5
-      height: 23
+      height: 16
     spriteID: 2e7c756bca02b094fbd0dd021a4e39d0
     spriteBone: []
     spriteOutline: []
@@ -273,16 +273,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_6
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 20
-      y: 32
+      y: 36
       width: 5
-      height: 23
+      height: 16
     spriteID: b394c50e2a998e94eb6ad7facc1258d0
     spriteBone: []
     spriteOutline: []
@@ -294,16 +294,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_7
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 45
-      y: 26
+      y: 20
       width: 7
-      height: 23
+      height: 16
     spriteID: d2b893f9bc3e2ea468f6817eeb0c92b4
     spriteBone: []
     spriteOutline: []
@@ -315,16 +315,16 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_8
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 61
-      y: 26
+      y: 20
       width: 7
-      height: 23
+      height: 16
     spriteID: be0237e341d3ef54181e0d8e335ed671
     spriteBone: []
     spriteOutline: []
@@ -336,7 +336,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_9
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -345,7 +345,7 @@ ScriptedImporter:
       x: 4
       y: 4
       width: 7
-      height: 23
+      height: 16
     spriteID: 242cd80045d01094b9169bb809500769
     spriteBone: []
     spriteOutline: []
@@ -357,7 +357,7 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: HouseTemplate_Tileset_10
     originalName: 
-    pivot: {x: 0, y: 0}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -366,7 +366,7 @@ ScriptedImporter:
       x: 20
       y: 4
       width: 7
-      height: 23
+      height: 16
     spriteID: 29d0ddfc3e7ee9445b8ec3bdf4f6bd33
     spriteBone: []
     spriteOutline: []
@@ -394,9 +394,9 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 0
-        y: 10
+        y: 16
         width: 144
-        height: 134
+        height: 128
       spriteId: 5fa57b1657a23944c8152e9774bdeaaa
     linkedCells: []
     parentIndex: -1

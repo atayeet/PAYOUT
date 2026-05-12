@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.000006109475, w: -1}
   m_LocalPosition: {x: 8.649891, y: -0.021862507, z: -0.046047166}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -156,13 +156,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.23809524, y: 1.0952381}
+    oldSize: {x: 0.3125, y: 1}
     newSize: {x: 0.33333334, y: 1.0476191}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.23809524, y: 1.0952381}
+  m_Size: {x: 0.3125, y: 1}
   m_EdgeRadius: 0
 --- !u!233 &4414141836728343405
 HingeJoint2D:
@@ -180,7 +180,7 @@ HingeJoint2D:
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.0031007847, y: 0.5176102}
-  m_ConnectedAnchor: {x: 8.652986, y: 0.49574775}
+  m_ConnectedAnchor: {x: 1.0577193, y: 2.047831}
   m_UseConnectedAnchor: 1
   m_UseMotor: 0
   m_Motor:

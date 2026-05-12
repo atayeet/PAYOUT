@@ -5,10 +5,9 @@ public class Bullet : MonoBehaviour
     public Rigidbody2D rb;
     public GameObject impactEffect;
     
-    
-    private Camera _mainCamera;
+    public bool isEnemyBullet = false; // YENÝ EKLENEN DEÐÝÞKEN
 
-    // Bir önceki karenin pozisyonunu tutmak için
+    private Camera _mainCamera;
     private Vector2 _previousPosition;
 
     private void Awake()
@@ -52,13 +51,14 @@ public class Bullet : MonoBehaviour
             // Çarptýðýmýz objenin Enemy Controller olup olmadýðýný kontrol et
             EnemyController enemy = hit.collider.GetComponent<EnemyController>();
 
-            // EÐER DÜÞMAN STUNLANMIÞSA (SERSEMLEMÝÞSE) BU MERMÝYÝ YOK SAY VE DÝÐER OBJELERE BAKMAYA DEVAM ET
-            if (enemy != null && enemy.IsCurrentlyStunned)
+            // DEÐÝÞEN KISIM: 
+            // Eðer düþman stunlanmýþsa VEYA bu bir düþman mermisiyse (dost ateþi), yok say ve arkasýna bakmayý sürdür
+            if (enemy != null && (enemy.IsCurrentlyStunned || isEnemyBullet))
             {
-                continue;
+                continue; // Mermi düþmanlarýn içinden geçip Player'ý vurabilir
             }
 
-            // Düþman (veya hasar alabilen yapý) kontrolü
+            // Düþman (veya hasar alabilen yapý - PLAYER) kontrolü
             IDamageable damageable = hit.collider.GetComponent<IDamageable>();
             if (damageable != null)
             {

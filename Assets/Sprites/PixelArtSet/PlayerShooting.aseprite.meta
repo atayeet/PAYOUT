@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639132461988073954
+  platformSettingsDirtyTick: 639138802880290883
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -144,7 +144,28 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 3, y: 4}
-  spriteSheetImportData: []
+  spriteSheetImportData:
+  - name: PlayerShooting_0
+    originalName: 
+    pivot: {x: 0.33, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 68
+      width: 21
+      height: 16
+    spriteID: 5d71c07b7c8a0164f86bd622d5c8fc29
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
   asepriteLayers:
   - layerIndex: 0
     uuid:

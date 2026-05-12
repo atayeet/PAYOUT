@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     public bool IsDead { get; private set; }
 
@@ -128,7 +128,15 @@ public class PlayerController : MonoBehaviour
             {
                 if (Mouse.current.leftButton.isPressed)
                 {
-                    weapon.TryFire();
+                    // weapon.TryFire() metodu mermi çıkarsa true döner.
+                    // Çıktıysa "shoot" trigger'ını tetikle.
+                    if (weapon.TryFire())
+                    {
+                        if (_torsoAnimator != null)
+                        {
+                            _torsoAnimator.SetTrigger("shoot");
+                        }
+                    }
                 }
             }
             else
@@ -275,14 +283,8 @@ public class PlayerController : MonoBehaviour
     {
         if (IsDead) return;
 
-        EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
-
-        if (enemy != null && enemy.enabled && !enemy.IsCurrentlyStunned)
-        {
-            Vector2 hitPoint = collision.GetContact(0).point;
-            Vector2 hitDirection = (transform.position - enemy.transform.position).normalized;
-            Die(hitPoint, hitDirection);
-        }
+        // Player'ın düşmana sadece dokunduğunda ölmesi ("Tek yeme") mantığı kaldırıldı.
+        // Artık düşmanlar onu sadece ateş ederek veya (varsa) yumruk atarak öldürebilecek.
     }
 
     private void OnMove(InputValue inputValue)
@@ -359,5 +361,15 @@ public class PlayerController : MonoBehaviour
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses";
 
         this.enabled = false;
+    }
+
+    // Mermi ya da başka hasar görebilen IDamageable olaylarında tetiklenecek fonksiyon (TEK YEME)
+    public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
+    {
+        if (IsDead) return;
+
+        // Player'ın elindeki Die() mantığını buraya direkt entegre ediyoruz 
+        // Veya "Die(hitPoint, hitDirection);" metodunu çağırıyoruz:
+        Die(hitPoint, hitDirection); 
     }
 }

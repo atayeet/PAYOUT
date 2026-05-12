@@ -53,21 +53,22 @@ public class PauseMenuManager : MonoBehaviour
 
     private void CheckRestartInput()
     {
-        // Eðer oyuncu ölmüþse
         if (_playerController != null && _playerController.IsDead)
         {
-            // Yazýyý görünür yap (Sadece bir kere aktifleþtirmek için kontrol ediyoruz)
             if (_restartTextUI != null && !_restartTextUI.activeSelf)
             {
                 _restartTextUI.SetActive(true);
             }
 
-            // R tuþuna basýldýysa mevcut sahneyi yeniden yükle
             if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
             {
-                Time.timeScale = 1f; // Zamanýn akmaya devam ettiðinden emin olun
+                Time.timeScale = 1f; 
                 GameIsPaused = false;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
+                
+                // DEÐÝÞEN KISIM: Additive sistem olduðu için, 
+                // doðrudan "CoreScene" i baþtan yükleyip her þeyi sýfýrlýyoruz.
+                // LevelManager statik tuttuðu isim sayesinde oyuncuyu doðru haritada spawn edecek.
+                SceneManager.LoadScene("CoreScene"); 
             }
         }
     }
