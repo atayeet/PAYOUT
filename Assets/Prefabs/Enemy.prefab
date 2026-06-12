@@ -68,6 +68,7 @@ Rigidbody2D:
   m_Constraints: 0
 --- !u!212 &2383635092276229555
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -86,6 +87,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -107,9 +110,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 23645611
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -8291332667507703565, guid: 5388935e6d2c2f444a7e7ce56712ef2e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -119,7 +124,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &5755230914723909662
 MonoBehaviour:
@@ -134,9 +138,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bulletKnockbackForce: 500
+  _stunSound: {fileID: 8300000, guid: b756cc4d1493cd344b032716e6726b7d, type: 3}
+  _sfxGroup: {fileID: 8580026129933411103, guid: 3bbef60ceffa96f48b93d76bfb031595, type: 2}
   HasWeapon: 1
-  _weapon: {fileID: 3319217696656395885}
-  _dropPistolPrefab: {fileID: 8688624912140836005, guid: b557c552721ffba4f86216d4457dfa71, type: 3}
+  _startingWeaponType: 0
+  _weaponPrefabs:
+  - type: 0
+    equippedPrefab: {fileID: 3959922318237099391, guid: 6b0ca29afa12ff6468ca733fd8af36af, type: 3}
+    dropPrefab: {fileID: 8688624912140836005, guid: b557c552721ffba4f86216d4457dfa71, type: 3}
+  - type: 1
+    equippedPrefab: {fileID: 3959922318237099391, guid: 820ea4868728a434cbe85446234ab2ff, type: 3}
+    dropPrefab: {fileID: 8688624912140836005, guid: a6ee3788ed6d2d448b600757faf9378a, type: 3}
+  - type: 2
+    equippedPrefab: {fileID: 3959922318237099391, guid: 0d71fe6d760c3ec49a1e3438700c8d3e, type: 3}
+    dropPrefab: {fileID: 8688624912140836005, guid: 80abc6487bf606b44a76dc3c2fd4b128, type: 3}
+  - type: 3
+    equippedPrefab: {fileID: 3959922318237099391, guid: 511f660ac6161c547908da0dfdd5cec5, type: 3}
+    dropPrefab: {fileID: 8688624912140836005, guid: 33926c2ec2c913f4994ee0b4ac03e0d1, type: 3}
   _weaponDropPoint: {fileID: 7589272858004389756}
 --- !u!114 &4909937700578894967
 MonoBehaviour:
@@ -150,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e6f216c2e5bd8498581dc23a49db0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerAwarenessDistance: 5
+  _playerAwarenessDistance: 15
   _shootingRange: 7
   _chaseSpeed: 5
   _patrolSpeed: 3
@@ -158,7 +176,7 @@ MonoBehaviour:
   _rotationSpeed: 500
   _rotationOffset: -90
   _patrolPointThreshold: 0.5
-  _roomSearchRadius: 20
+  _roomSearchRadius: 50
   _isStationary: 0
 --- !u!95 &335786535716752986
 Animator:
@@ -217,7 +235,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 0.7}
+  m_Size: {x: 0.8, y: 0.8}
   m_Direction: 0
 --- !u!195 &7566487693963811995
 NavMeshAgent:
@@ -250,7 +268,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2510970100756291078}
-  - component: {fileID: 3319217696656395885}
   m_Layer: 9
   m_Name: Weapon
   m_TagString: Untagged
@@ -274,25 +291,6 @@ Transform:
   - {fileID: 2074572480395491449}
   m_Father: {fileID: 7589272858004389756}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3319217696656395885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3690981789955791193}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58a8a2d4783ab9b43b1a1e8ad5278e2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bullet: {fileID: 7443988871755527675, guid: d29f20708a8352d49873e3df7d4d8d11, type: 3}
-  firePoint: {fileID: 2074572480395491449}
-  fireForce: 40
-  _obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  _fireRate: 1
 --- !u!1 &7565808178372008214
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,10 +315,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7565808178372008214}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.74999994, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2510970100756291078}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

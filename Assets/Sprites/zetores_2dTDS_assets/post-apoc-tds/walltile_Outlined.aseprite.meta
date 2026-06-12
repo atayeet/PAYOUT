@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 0
     importHiddenLayers: 0
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 639138785952332713
   textureAssetName: 
@@ -154,7 +158,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 20
+      y: 36
       width: 32
       height: 32
     spriteID: 2747ed4ef37f144469c5ebd2ba9c8f74
@@ -181,8 +185,8 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
-      y: 20
+      x: 36
+      y: 36
       width: 32
       height: 32
     spriteID: 6bf334d42dd2ea643a333464270b4b7c
@@ -209,10 +213,10 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 100
-      y: 51
-      width: 33
-      height: 33
+      x: 36
+      y: 4
+      width: 32
+      height: 32
     spriteID: 450194310b1374b42a5b26efaff3b3a6
     spriteBone: []
     spriteOutline: []
@@ -235,10 +239,10 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 100
-      y: 3
-      width: 33
-      height: 33
+      x: 68
+      y: 4
+      width: 32
+      height: 32
     spriteID: 3e49d2af6fb6a8b42b7cb9def65b7967
     spriteBone: []
     spriteOutline: []
@@ -262,7 +266,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 52
+      y: 68
       width: 32
       height: 32
     spriteID: 446dd53dfbe3f4443a1341b43cf0631e
@@ -288,7 +292,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 84
+      y: 100
       width: 12
       height: 12
     spriteID: 65f8e7297c723444889747595fe5c003
@@ -313,8 +317,8 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
-      y: 52
+      x: 36
+      y: 68
       width: 32
       height: 32
     spriteID: 6e9ffbc56893ffd41ae0d001da40dd8e
@@ -339,8 +343,8 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 52
-      y: 84
+      x: 36
+      y: 100
       width: 12
       height: 12
     spriteID: e9410db685e775b42bd160eec8b7ce4a
@@ -365,8 +369,8 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 148
-      y: 68
+      x: 4
+      y: 4
       width: 12
       height: 16
     spriteID: a59d1681a257ee4479b7a3ef82963f13
@@ -391,8 +395,8 @@ ScriptedImporter:
     customData: 
     rect:
       serializedVersion: 2
-      x: 164
-      y: 68
+      x: 20
+      y: 4
       width: 12
       height: 16
     spriteID: d4a910277ff783443a766ca53e61b128
@@ -409,6 +413,411 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_10
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 68
+      width: 32
+      height: 32
+    spriteID: 9ec3a973beaf8c04d9e2eb586ae54c09
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: -4, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_11
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 116
+      y: 68
+      width: 32
+      height: 32
+    spriteID: 32f59d81fa1774143bc0db4f5d3ea7fd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: -4, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_12
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 36
+      width: 32
+      height: 32
+    spriteID: 8650461851be7904390ac0ed6f2a509a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 16, y: -4}
+      - {x: -4, y: -4}
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: 16, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_13
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 116
+      y: 36
+      width: 32
+      height: 32
+    spriteID: 20a558f2b2d87f645b92c96fb355154c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 16, y: -4}
+      - {x: -4, y: -4}
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: 16, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_14
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 84
+      y: 100
+      width: 12
+      height: 12
+    spriteID: 5e6bb44e843909f42a2eeab8c3613391
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 6, y: 6}
+      - {x: -6, y: 6}
+      - {x: -6, y: -6}
+      - {x: 6, y: -6}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_15
+    originalName: 
+    pivot: {x: 0.5, y: -0.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 116
+      y: 100
+      width: 12
+      height: 12
+    spriteID: 70b48b88a73cc574db1411f34db33336
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 6, y: 6}
+      - {x: -6, y: 6}
+      - {x: -6, y: -6}
+      - {x: 6, y: -6}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_17
+    originalName: 
+    pivot: {x: 0.5, y: 1.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 68
+      width: 32
+      height: 32
+    spriteID: 703878b42292fd146b9089df68b4eb6a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: -4, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_18
+    originalName: 
+    pivot: {x: -0.125, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 36
+      width: 32
+      height: 32
+    spriteID: 245f479f23ceb854aae13eee23bc9cc0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 16, y: -4}
+      - {x: -4, y: -4}
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: 16, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_19
+    originalName: 
+    pivot: {x: -0.125, y: 0.5}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 36
+      width: 32
+      height: 32
+    spriteID: bafedfdc282e57d4eae7b3f795f5ddf8
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 16, y: -4}
+      - {x: -4, y: -4}
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: 16, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_20
+    originalName: 
+    pivot: {x: 0.5, y: 1.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 100
+      width: 12
+      height: 12
+    spriteID: 8ee0f2e911a35ca43ab95a4931aef5e0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 6, y: 6}
+      - {x: -6, y: 6}
+      - {x: -6, y: -6}
+      - {x: 6, y: -6}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_16
+    originalName: 
+    pivot: {x: 0.5, y: 1.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 164
+      y: 68
+      width: 32
+      height: 32
+    spriteID: 695e1ef4a5752d748807fed6bd3262cc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: -4, y: 16}
+      - {x: -16, y: 16}
+      - {x: -16, y: -16}
+      - {x: -4, y: -16}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_21
+    originalName: 
+    pivot: {x: 0.5, y: 1.125}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 196
+      y: 100
+      width: 12
+      height: 12
+    spriteID: ce19e8b9779d07847b131c400c75bdf1
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline:
+    - outline:
+      - {x: 6, y: 6}
+      - {x: -6, y: 6}
+      - {x: -6, y: -6}
+      - {x: 6, y: -6}
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_22
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 244
+      y: 36
+      width: 32
+      height: 32
+    spriteID: 5ca915734fec0cb42ac34f60620255bc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_23
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 276
+      y: 36
+      width: 32
+      height: 32
+    spriteID: e40ae8813c0ec8745a41bce839ed78ad
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_24
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 244
+      y: 68
+      width: 32
+      height: 32
+    spriteID: 2ba132f46e4eade4580c1c45104222cd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  - name: walltile_Outlined_25
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
+    rect:
+      serializedVersion: 2
+      x: 276
+      y: 68
+      width: 32
+      height: 32
+    spriteID: bdb12919342bfdc44aac058d5891d1c7
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 0, y: 0}
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -428,11 +837,14 @@ ScriptedImporter:
       cellRect:
         x: 0
         y: 0
-        width: 172
-        height: 92
+        width: 304
+        height: 108
       spriteId: 12a71ceba9d0f9c49a1b45ef1ca72aed
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0
@@ -473,5 +885,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 212, y: 96}
-  previousTextureSize: {x: 256, y: 128}
+  canvasSize: {x: 304, y: 128}
+  previousTextureSize: {x: 512, y: 128}

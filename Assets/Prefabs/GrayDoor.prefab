@@ -38,6 +38,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -449.999}
 --- !u!212 &7862791446319885769
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -56,6 +57,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -77,9 +80,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1782920035
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 30
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -620676189147535657, guid: 0cbaa7e86f70cdb47a51599efd05d937, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -89,7 +94,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!50 &547760517007521799
 Rigidbody2D:
@@ -180,7 +184,7 @@ HingeJoint2D:
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0.0031007847, y: 0.5176102}
-  m_ConnectedAnchor: {x: -6.4073896, y: -0.9021629}
+  m_ConnectedAnchor: {x: 15.017502, y: -5.7240257}
   m_UseConnectedAnchor: 1
   m_UseMotor: 0
   m_Motor:
@@ -207,3 +211,6 @@ MonoBehaviour:
   _closeDelay: 3
   _hitRadius: 1
   _stunKnockbackForce: 500
+  _doorSound: {fileID: 8300000, guid: 37066eaa2a21e1f4a97bc1d547db4a4a, type: 3}
+  _doorSoundVolume: 1.5
+  _sfxGroup: {fileID: 8580026129933411103, guid: 3bbef60ceffa96f48b93d76bfb031595, type: 2}

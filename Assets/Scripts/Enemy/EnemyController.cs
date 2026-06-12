@@ -1,36 +1,39 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlayerAwarenessController))]
 public class EnemyController : MonoBehaviour, IDamageable
 {
-
-    // Bileşenler
     private Rigidbody2D _rigidbody;
     private PlayerAwarenessController _playerAwarenessController;
     private Animator _animator;
 
     [Header("Combat Settings")]
-    [Tooltip("Mermi yediğinde ne kadar geriye savrulacak?")]
-    [SerializeField] private float _bulletKnockbackForce = 500f; // Mermi savrulma gücünü Inspector'a taşıdık
+    [SerializeField] private float _bulletKnockbackForce = 500f;
 
-    [Header("Weapon Settings")]
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip _stunSound;
+    [SerializeField] [Range(0f, 1f)] private float _stunSoundVolume = 1f;
+    [SerializeField] private UnityEngine.Audio.AudioMixerGroup _sfxGroup;
+    private AudioSource _audioSource;
+
+    [Header("Weapon Dynamic Settings")]
     public bool HasWeapon = true;
-    [SerializeField] private Weapon _weapon; // Enemy'nin child objesi olan Weapon
-    [SerializeField] private GameObject _dropPistolPrefab; // Yere düşecek tabanca prefabı
-    [SerializeField] private Transform _weaponDropPoint; // Silahın düşeceği nokta (Eli vb.)
+    [SerializeField] private WeaponType _startingWeaponType = WeaponType.Pistol; // Başlangıç silah türü
+    [SerializeField] private List<WeaponPrefabMap> _weaponPrefabs; // Silah Prefab Haritaları
+    [SerializeField] private Transform _weaponDropPoint;
 
-    // Stun Değişkenleri
-    private bool _isStunned = false; 
+    private Weapon _weapon; // Kuşanılmış olan dinamik Weapon referansı
+
+    private bool _isStunned = false;
     private float _stunTimer = 0f;
     private int _originalLayer;
     private int _stunnedLayer;
     public bool IsCurrentlyStunned => _isStunned;
 
-    // Finish Değişkenleri
     public bool IsBeingFinished { get; private set; } = false;
-
     private Collider2D _collider;
 
     private void Awake()
@@ -43,9 +46,23 @@ public class EnemyController : MonoBehaviour, IDamageable
         _originalLayer = gameObject.layer;
         _stunnedLayer = LayerMask.NameToLayer("StunnedEntities");
 
-        // Başlangıçta silahı ayarlama
-        if (_weapon != null) _weapon.gameObject.SetActive(HasWeapon);
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        _audioSource.playOnAwake = false;
+        _audioSource.spatialBlend = 1.0f;
+        if (_sfxGroup != null)
+        {
+            _audioSource.outputAudioMixerGroup = _sfxGroup;
+        }
 
+        // Başlangıçta silahı dinamik olarak kuşan
+        if (HasWeapon)
+        {
+            EquipWeapon(_startingWeaponType);
+        }
     }
 
     private void Update()
@@ -63,7 +80,7 @@ public class EnemyController : MonoBehaviour, IDamageable
             if (_stunTimer <= 0f)
             {
                 _isStunned = false;
-                _playerAwarenessController.IsStunned = false; // Harekete izin ver
+                _playerAwarenessController.IsStunned = false;
                 gameObject.layer = _originalLayer;
                 _playerAwarenessController.SetAgentEnabled(true);
             }
@@ -74,77 +91,127 @@ public class EnemyController : MonoBehaviour, IDamageable
     {
         Vector2 velocity = _playerAwarenessController.GetAgentVelocity();
         bool isMoving = !_isStunned && velocity.sqrMagnitude > 0.01f;
-        
+
         _animator.SetBool("isMoving", isMoving);
         _animator.SetBool("isStunned", _isStunned);
-        _animator.SetBool("hasWeapon", HasWeapon); // ANİMATÖR BAĞLANTISI YAPILDI
+        _animator.SetBool("hasWeapon", HasWeapon);
     }
 
     public void Stun(Vector2 knockbackDir, float knockbackForce)
     {
         if (!this.enabled || _isStunned) return;
 
-        // STUN YEDİĞİNDE SİLAHI VARSA DÜŞÜR!
         if (HasWeapon)
         {
             DropWeapon(knockbackDir);
         }
 
         _isStunned = true;
-        _playerAwarenessController.IsStunned = true; // YZ Hareketini durdur
+        _playerAwarenessController.IsStunned = true;
         _stunTimer = 1.5f;
 
-        _playerAwarenessController.SetAgentEnabled(false); 
-        
+        _playerAwarenessController.SetAgentEnabled(false);
+
         if (_stunnedLayer != -1) gameObject.layer = _stunnedLayer;
         if (_animator != null) _animator.SetBool("isStunned", true);
 
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.AddForce(knockbackDir * knockbackForce, ForceMode2D.Impulse);
 
+        if (_audioSource != null && _stunSound != null)
+        {
+            _audioSource.PlayOneShot(_stunSound, _stunSoundVolume);
+        }
+
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "StunnedEntities";
-
     }
 
-    public void DropWeapon(Vector2 fallDirection)
+    private WeaponPrefabMap? GetWeaponMap(WeaponType type)
     {
-        HasWeapon = false;
-        if (_weapon != null) _weapon.gameObject.SetActive(false); // Kendi silahını gizle
-
-        if (_dropPistolPrefab != null && _weaponDropPoint != null)
+        foreach (var map in _weaponPrefabs)
         {
-            GameObject droppedPistol = Instantiate(_dropPistolPrefab, _weaponDropPoint.position, transform.rotation);
-            DropPistol script = droppedPistol.GetComponent<DropPistol>();
+            if (map.type == type) return map;
+        }
+        return null;
+    }
 
-            if (script != null)
+    // Yeni Metot: Düşman için dinamik silah kuşanımı
+    public void EquipWeapon(WeaponType type, int ammoCount = -1)
+    {
+        WeaponPrefabMap? map = GetWeaponMap(type);
+        if (map.HasValue && map.Value.equippedPrefab != null && _weaponDropPoint != null)
+        {
+            GameObject weaponObj = Instantiate(map.Value.equippedPrefab, _weaponDropPoint);
+            weaponObj.transform.localPosition = Vector3.zero;
+            weaponObj.transform.localRotation = Quaternion.Euler(0f, 0f, 90f);
+            weaponObj.transform.localScale = Vector3.one;
+
+            _weapon = weaponObj.GetComponent<Weapon>();
+            HasWeapon = true;
+
+            if (_weapon != null)
             {
-                // Silahı arkaya/yana doğru havaya fırlat
-                script.Throw(-fallDirection + (Vector2)Random.insideUnitCircle * 0.5f, 4f);
+                if (ammoCount >= 0) _weapon.CurrentAmmo = ammoCount;
+                else _weapon.Reload();
+            }
+
+            if (_animator != null)
+            {
+                _animator.SetBool("hasWeapon", true);
             }
         }
     }
 
-    // Yerdeki silahı aldığında çalışacak fonksiyon
-    public void EquipWeapon(GameObject droppedPistolObj)
+    // AI'ın yerden silah alabilmesi için mevcut imzayı koruyoruz
+    public void EquipWeapon(GameObject droppedWeaponObj)
     {
-        HasWeapon = true;
-        if (_weapon != null) _weapon.gameObject.SetActive(true);
-        Destroy(droppedPistolObj); // Yerdeki DropPistol objesini yok et
+        DropPistol dropScript = droppedWeaponObj.GetComponent<DropPistol>();
+        if (dropScript != null)
+        {
+            EquipWeapon(dropScript.weaponType, dropScript.currentAmmo);
+        }
+        Destroy(droppedWeaponObj);
     }
 
-    // Ateş etme (PlayerAwarenessController tarafından çağrılır)
+    public void DropWeapon(Vector2 fallDirection)
+    {
+        if (!HasWeapon || _weapon == null) return;
+
+        HasWeapon = false;
+
+        WeaponPrefabMap? map = GetWeaponMap(_weapon.weaponType);
+        if (map.HasValue && map.Value.dropPrefab != null && _weaponDropPoint != null)
+        {
+            GameObject droppedWeapon = Instantiate(map.Value.dropPrefab, _weaponDropPoint.position, transform.rotation);
+            DropPistol dropScript = droppedWeapon.GetComponent<DropPistol>();
+
+            if (dropScript != null)
+            {
+                dropScript.SetupDrop(_weapon.dropSprite, _weapon.weaponType, _weapon.CurrentAmmo);
+                dropScript.Throw(-fallDirection + (Vector2)Random.insideUnitCircle * 0.5f, 4f);
+            }
+        }
+
+        // Elindeki silahı yok et
+        Destroy(_weapon.gameObject);
+        _weapon = null;
+
+        if (_animator != null)
+        {
+            _animator.SetBool("hasWeapon", false);
+        }
+    }
+
     public void FireWeapon()
     {
         if (HasWeapon && _weapon != null)
         {
-            // Silah gerçekten ateş edebildiyse animasyonu oynat
-            if (_weapon.TryFire()) 
+            if (_weapon.TryFire())
             {
                 if (_animator != null)
                 {
-                    // Artık zorla Play() kullanmak yerine Trigger tetikliyoruz
-                    _animator.SetTrigger("shoot"); 
+                    _animator.SetTrigger("shoot");
                 }
             }
         }
@@ -153,9 +220,7 @@ public class EnemyController : MonoBehaviour, IDamageable
     public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
     {
         if (!this.enabled) return;
-        
-        // DÜŞMAN STUNNED (SERSEMLEMİŞ) DURUMDAYKEN HASAR ALAMAZ/VURULAMAZ
-        if (_isStunned) return; 
+        if (_isStunned) return;
 
         _playerAwarenessController.SetAgentEnabled(false);
 
@@ -166,76 +231,60 @@ public class EnemyController : MonoBehaviour, IDamageable
         Quaternion bloodRotation = Quaternion.Euler(0f, 0f, backAngle);
 
         EffectPool.Instance.SpawnEffect("BackBlood", backPoint, bloodRotation);
-
-        // SerializeField üzerinden belirlediğimiz gücü kullanıyoruz
         _rigidbody.AddForce(hitDirection * _bulletKnockbackForce, ForceMode2D.Impulse);
 
         Die();
     }
 
-    // Player, Space tuşuna basıp üzerine atladığında çağrılır
     public void StartBeingFinished()
     {
         if (!this.enabled || !_isStunned) return;
 
         IsBeingFinished = true;
-        _stunTimer = 999f; // Kalkmasını engellemek için süreyi dondur/uzat
-        _rigidbody.linearVelocity = Vector2.zero; // Hareketi durdur
-        
+        _stunTimer = 999f;
+        _rigidbody.linearVelocity = Vector2.zero;
+
         if (_animator != null)
         {
-            _animator.SetBool("isBeingFinished", true); // Yerden doğrulma animasyonu
+            _animator.SetBool("isBeingFinished", true);
         }
     }
 
-    // Player sol tıka bastığında çağrılır
     public void ExecuteFinisherDeath()
     {
         if (_animator != null)
         {
-            // Doğrulma animasyonundan çık
             _animator.SetBool("isBeingFinished", false);
-            
-            // Artık trigger kullanmamıza gerek yok, animasyonu Die() içinde rastgele oynatacağız.
-            // _animator.SetTrigger("finisherDie"); 
         }
 
-        // Kan efekti çıkarma (Kafanın olduğu yere çıkartmak için ufak bir offset verilebilir)
         Vector2 enemyCenter = GetComponent<Collider2D>().bounds.center;
         EffectPool.Instance.SpawnEffect("FrontBlood", enemyCenter, Quaternion.identity);
 
-        Die(true); // Ölüm fonksiyonunu çağır (Finisher ile öldüğünü belirt)
+        Die(true);
     }
 
-    // Die fonksiyonuna isteğe bağlı bir parametre ekledik
     public void Die(bool isFinisherDeath = false)
     {
-        if (!this.enabled) return; // Çift işlem yapmasını engelleme
+        if (!this.enabled) return;
 
-        // YENİ EKLENEN: Düşman ölüyor, elinde silah varsa düşürsün.
         if (HasWeapon)
         {
-            // Ölürken rastgele hafif bir fırlatma yönüyle silahı yere düşür
             DropWeapon(Random.insideUnitCircle.normalized);
         }
 
-        if (LevelManager.Instance != null) 
+        if (LevelManager.Instance != null)
         {
             LevelManager.Instance.OnEnemyDied();
         }
 
         this.enabled = false;
-        
-        if (_playerAwarenessController != null) 
+
+        if (_playerAwarenessController != null)
         {
             _playerAwarenessController.SetAgentEnabled(false);
             _playerAwarenessController.enabled = false;
         }
 
-        // --- BU KISMI DEĞİŞTİRDİK ---
-        // _rigidbody.linearVelocity = Vector2.zero; // Aniden durmasını engelledik
-        // _rigidbody.simulated = false; // Fizik motorunu hemen kapatma
-        
         if (_animator != null)
         {
             _animator.SetBool("isDead", true);
@@ -244,12 +293,10 @@ public class EnemyController : MonoBehaviour, IDamageable
 
             if (!isFinisherDeath)
             {
-                // Normal ölüm: EnemyDeath1, 2, 3 veya 4
                 _animator.Play("EnemyDeath" + Random.Range(1, 5));
             }
             else
             {
-                // İnfaz ölümü: EnemyKnocked1, 2, 3 veya 4
                 _animator.Play("EnemyKnocked" + Random.Range(1, 5));
             }
         }

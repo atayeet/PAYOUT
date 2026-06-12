@@ -12,21 +12,55 @@ public class VirtualCursor : MonoBehaviour
     [SerializeField] private float _cameraFollowSpeed = 5f;
     [SerializeField] private float _cameraMaxDistance = 4f; 
 
+    [Header("Look Ahead Settings (SHIFT)")]
+    [SerializeField] private float _lookAheadMaxAimDistance = 12f;     // SHIFT basılıyken imlecin oyuncudan ne kadar uzaklaşabileceği
+    [SerializeField] private float _lookAheadCameraMaxDistance = 8f;   // SHIFT basılıyken kameranın oyuncudan ne kadar uzaklaşabileceği
+    [SerializeField] private float _lookAheadTransitionSpeed = 5f;     // Görüş açısı geçiş hızı
+
     private Camera _mainCamera;
     private PlayerController _player;
     
     // İmlecin Player'a göre DÜNYA üzerindeki mesafesi
     private Vector3 _aimOffset;
 
+    private float _currentMaxAimDistance;
+    private float _currentCameraMaxDistance;
+
+    private Transform _cameraAnchor;
+
+    public bool IsLookingAhead => Keyboard.current != null && (Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed);
+
     private void Awake()
     {
         _mainCamera = Camera.main;
-        _player = Object.FindFirstObjectByType<PlayerController>();
+        _player = Object.FindAnyObjectByType<PlayerController>();
 
         LockSystemCursor();
         
         // Oyun başında imleç hafif sağ tarafta bir ofsetle başlasın
         _aimOffset = new Vector3(2f, 0f, 0f);
+
+        _currentMaxAimDistance = _maxAimDistance;
+        _currentCameraMaxDistance = _cameraMaxDistance;
+
+        // Kameranın takip edeceği bir Anchor (Çapa) objesi oluşturuyoruz
+        GameObject anchorObj = new GameObject("CameraAnchor");
+        _cameraAnchor = anchorObj.transform;
+        if (_player != null)
+        {
+            _cameraAnchor.position = _player.transform.position;
+        }
+    }
+
+    private void Start()
+    {
+        // Cinemachine kamerasını bulup takip hedefini bu Anchor yapıyoruz
+        var vcam = Object.FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+        if (vcam != null)
+        {
+            vcam.Follow = _cameraAnchor;
+            vcam.LookAt = null; // 2D'de rotasyon bozulmalarını önlemek için LookAt'i null yapıyoruz
+        }
     }
 
     private void Update()
@@ -34,8 +68,18 @@ public class VirtualCursor : MonoBehaviour
         // Oyuncu öldüyse veya oyun durduysa imleci güncellemeyi kes
         if (PauseMenuManager.GameIsPaused || _player == null) return;
 
+        UpdateLookAheadValues();
         UpdateCursorPosition();
         UpdateDynamicCamera();
+    }
+
+    private void UpdateLookAheadValues()
+    {
+        float targetMaxAim = IsLookingAhead ? _lookAheadMaxAimDistance : _maxAimDistance;
+        float targetCamMax = IsLookingAhead ? _lookAheadCameraMaxDistance : _cameraMaxDistance;
+
+        _currentMaxAimDistance = Mathf.Lerp(_currentMaxAimDistance, targetMaxAim, Time.deltaTime * _lookAheadTransitionSpeed);
+        _currentCameraMaxDistance = Mathf.Lerp(_currentCameraMaxDistance, targetCamMax, Time.deltaTime * _lookAheadTransitionSpeed);
     }
 
     private void UpdateCursorPosition()
@@ -55,7 +99,7 @@ public class VirtualCursor : MonoBehaviour
         }
 
         // 2. İmlecin (Nişangahın) oyuncudan en fazla ne kadar uzağa gidebileceğini kestiğimiz alan
-        _aimOffset = Vector3.ClampMagnitude(_aimOffset, _maxAimDistance);
+        _aimOffset = Vector3.ClampMagnitude(_aimOffset, _currentMaxAimDistance);
 
         // 3. FINAL POZİSYON:
         // İmleç her daim = (Oyuncunun Pozisyonu) + (Nişan Uzaklığı)
@@ -66,20 +110,29 @@ public class VirtualCursor : MonoBehaviour
 
     private void UpdateDynamicCamera()
     {
-        if (_enableDynamicCamera && _player != null)
+        if (_player != null && _cameraAnchor != null)
         {
-            // Oyuncu ile Cursor arasındaki orta noktayı bul
-            Vector3 midPoint = (_player.transform.position + transform.position) / 2f;
-            
-            // Kameranın oyuncudan çok fazla uzaklaşmaması için kilit noktası
-            Vector3 offset = midPoint - _player.transform.position;
-            offset = Vector3.ClampMagnitude(offset, _cameraMaxDistance);
-            Vector3 targetCamPos = _player.transform.position + offset;
-            
-            targetCamPos.z = _mainCamera.transform.position.z; // Z ekseninde kamerayı bozmamak için
+            Vector3 targetCamPos;
 
-            // Kamerayı yumuşakça (ve hafif gecikmeli, estetik his için) oraya taşı
-            _mainCamera.transform.position = Vector3.Lerp(_mainCamera.transform.position, targetCamPos, Time.deltaTime * _cameraFollowSpeed);
+            if (_enableDynamicCamera && IsLookingAhead)
+            {
+                // SHIFT basılıyken: Oyuncu ile Cursor arasındaki orta noktayı bul
+                Vector3 midPoint = (_player.transform.position + transform.position) / 2f;
+                Vector3 offset = midPoint - _player.transform.position;
+                offset = Vector3.ClampMagnitude(offset, _currentCameraMaxDistance);
+                targetCamPos = _player.transform.position + offset;
+            }
+            else
+            {
+                // Normal durumda: Kamera sadece oyuncunun üzerinde kilitli kalır
+                targetCamPos = _player.transform.position;
+            }
+            
+            // 2D'de Z derinliğini korumak için 0f yapıyoruz, Cinemachine Follow Offset (-10 vb.) derinliği yönetir
+            targetCamPos.z = 0f;
+ 
+            // Çapayı (Anchor) yumuşakça (ve hafif gecikmeli, estetik his için) hedef pozisyona taşıyoruz
+            _cameraAnchor.position = Vector3.Lerp(_cameraAnchor.position, targetCamPos, Time.deltaTime * _cameraFollowSpeed);
         }
     }
 

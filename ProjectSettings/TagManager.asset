@@ -44,6 +44,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Props
+    uniqueID: 387664975
+    locked: 0
   - name: Corpses
     uniqueID: 88733255
     locked: 0
@@ -68,6 +71,9 @@ TagManager:
   - name: Obstacle
     uniqueID: 1782920035
     locked: 0
+  - name: Lamps
+    uniqueID: 2634873361
+    locked: 0
   - name: HitParticles
     uniqueID: 1359891977
     locked: 0
@@ -76,3 +82,4 @@ TagManager:
     locked: 0
   m_RenderingLayers:
   - Default
+  m_MigratedRenderPipelines: []

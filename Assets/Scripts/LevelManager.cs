@@ -20,6 +20,9 @@ public class LevelManager : MonoBehaviour
     private int _totalEnemies;
     private int _deadEnemies = 0;
 
+    public int TotalEnemies => _totalEnemies;
+    public int DeadEnemies => _deadEnemies;
+
     private PlayerController _player;
 
     private void Awake()
@@ -30,7 +33,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        _player = Object.FindFirstObjectByType<PlayerController>();
+        _player = Object.FindAnyObjectByType<PlayerController>();
 
         // YENİ: Oyun ilk açıldıysa ve hafıza boşsa, firstLevelName'i baz al.
         if (string.IsNullOrEmpty(_savedLevelName))
@@ -45,6 +48,15 @@ public class LevelManager : MonoBehaviour
     public void OnEnemyDied()
     {
         _deadEnemies++;
+        if (_player != null)
+        {
+            float amount = 25f;
+            if (DifficultyManager.Instance != null)
+            {
+                amount = DifficultyManager.Instance.GetFinisherStaminaOnKill();
+            }
+            _player.AddFinisherStamina(amount);
+        }
     }
 
     public bool AreAllEnemiesDead()
@@ -95,7 +107,7 @@ public class LevelManager : MonoBehaviour
     private void SetupNewLevel()
     {
         _deadEnemies = 0;
-        EnemyController[] enemies = Object.FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
+        EnemyController[] enemies = Object.FindObjectsByType<EnemyController>();
         _totalEnemies = enemies.Length;
 
         GameObject spawnPoint = GameObject.FindGameObjectWithTag("Respawn");
@@ -108,6 +120,39 @@ public class LevelManager : MonoBehaviour
         else
         {
             Debug.LogWarning("Sahneye 'Respawn' etiketli bir SpawnPoint koymayı unuttunuz!");
+        }
+
+        // YENİ: Sahneye ait LevelBounds objesini bulup Cinemachine Confiner'a ata
+        UpdateCameraBounds();
+    }
+
+    private void UpdateCameraBounds()
+    {
+        // Cinemachine kamerasını ve üzerindeki Confiner2D bileşenini buluyoruz
+        var vcam = Object.FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+        if (vcam != null)
+        {
+            var confiner = vcam.GetComponent<Unity.Cinemachine.CinemachineConfiner2D>();
+            if (confiner != null)
+            {
+                // Yeni yüklenen sahnedeki LevelBounds bileşenini ara
+                LevelBounds bounds = Object.FindAnyObjectByType<LevelBounds>();
+                if (bounds != null && bounds.Collider != null)
+                {
+                    confiner.BoundingShape2D = bounds.Collider;
+                    confiner.InvalidateBoundingShapeCache(); // Önbelleği temizleerek yeni sınırları etkinleştir
+                }
+                else
+                {
+                    // Fallback: Sahneye özel bir sınır tanımlanmamışsa, CoreScene'deki varsayılan sınırları aramayı dene
+                    GameObject defaultBounds = GameObject.Find("A1");
+                    if (defaultBounds != null)
+                    {
+                        confiner.BoundingShape2D = defaultBounds.GetComponent<Collider2D>();
+                        confiner.InvalidateBoundingShapeCache();
+                    }
+                }
+            }
         }
     }
 

@@ -8,16 +8,16 @@ public class PlayerAwarenessController : MonoBehaviour
 {
     public bool AwareOfPlayer { get; private set; }
     public Vector2 DirectionToPlayer { get; private set; }
-    public bool IsStunned { get; set; } // EnemyController tarafýndan güncellenecek
+    public bool IsStunned { get; set; } // EnemyController taraf ndan g ncellenecek
 
     [Header("Awareness")]
     [SerializeField] private float _playerAwarenessDistance = 10f;
-    [SerializeField] private float _shootingRange = 7f; // Ateþ menzili eklendi!
+    [SerializeField] private float _shootingRange = 7f; // Ate  menzili eklendi!
 
     [Header("Movement & Rotation")]
     [SerializeField] private float _chaseSpeed = 3.5f;
     [SerializeField] private float _patrolSpeed = 1.5f;
-    [SerializeField] private float _fleeSpeed = 4f; // Kaçma Hýzý eklendi!
+    [SerializeField] private float _fleeSpeed = 4f; // Ka ma H z  eklendi!
     [SerializeField] private float _rotationSpeed = 500f;
     [SerializeField] private float _rotationOffset = 0f;
 
@@ -31,31 +31,35 @@ public class PlayerAwarenessController : MonoBehaviour
     private Transform _playerTransform;
     private float _sqrPlayerAwarenessDistance;
 
+    private Vector2 _lastSeenPosition;
+    private bool _hasLastSeenPosition;
+
     private NavMeshAgent _agent;
     private Rigidbody2D _rigidbody;
     private PlayerController _playerController;
     private EnemyController _enemyController;
 
-    private enum EnemyState { Idle, Patrol, Chase, SearchWeapon, Flee } 
+    private enum EnemyState { Idle, Patrol, Alert, Chase, SearchWeapon, Flee, InvestigateLastSeen } 
     private EnemyState _currentState; 
+    private float _alertTimer;
     
     private List<Transform> _currentPatrolPoints = new List<Transform>();
     private int _currentPatrolIndex;
     
-    private GameObject _targetDroppedWeapon; // Aranýlan yerdeki silah
+    private GameObject _targetDroppedWeapon; // Aran lan yerdeki silah
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _enemyController = GetComponent<EnemyController>(); // EKLENDÝ
+        _enemyController = GetComponent<EnemyController>(); // EKLEND 
 
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
         _agent.speed = _patrolSpeed;
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
 
-        PlayerController pc = Object.FindFirstObjectByType<PlayerController>();
+        PlayerController pc = Object.FindAnyObjectByType<PlayerController>();
         if (pc != null) 
         {
             _playerTransform = pc.transform;
@@ -106,6 +110,8 @@ public class PlayerAwarenessController : MonoBehaviour
             {
                 AwareOfPlayer = true;
                 DirectionToPlayer = enemyToPlayerVector.normalized;
+                _lastSeenPosition = _playerTransform.position;
+                _hasLastSeenPosition = true;
             }
             else
             {
@@ -120,34 +126,57 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void HandleStateTransitions()
     {
-        // 1. Silahsýzsa Silahý Arama veya Kaçma Davranýþý (FLEE / SEARCH WEAPON)
+        // 1. SilahsÄ±zsa SilahÄ± Arama veya KaÃ§ma DavranÄ±ÅŸÄ± (FLEE / SEARCH WEAPON)
         if (!_enemyController.HasWeapon)
         {
             TryFindNearestDroppedWeapon();
             
             if (_targetDroppedWeapon != null)
             {
-                _currentState = EnemyState.SearchWeapon; // Silah bulunduysa ona koþ
+                _currentState = EnemyState.SearchWeapon; // Silah bulunduysa ona koÅŸ
             }
             else if (AwareOfPlayer)
             {
-                _currentState = EnemyState.Flee; // Silah yoksa ve Player yakýnsa kaç
+                _currentState = EnemyState.Flee; // Silah yoksa ve Player yakÄ±nsa kaÃ§
             }
             else
             {
-                _currentState = EnemyState.Idle; // Oyuncu yok silah da yok öylece bekle
+                _currentState = EnemyState.Idle; // Oyuncu yok silah da yok Ã¶ylece bekle
             }
         }
-        // 2. Silahý Varsa ve Player Görülüyorsa -> CHASE
-        else if (AwareOfPlayer && _currentState != EnemyState.Chase)
+        // 2. SilahÄ± Varsa ve Player GÃ¶rÃ¼lÃ¼yorsa
+        else if (AwareOfPlayer)
         {
-            _currentState = EnemyState.Chase;
+            if (_currentState != EnemyState.Chase && _currentState != EnemyState.Alert)
+            {
+                if (_currentState == EnemyState.InvestigateLastSeen)
+                {
+                    _currentState = EnemyState.Chase;
+                }
+                else
+                {
+                    _currentState = EnemyState.Alert;
+                    float duration = 0.5f;
+                    if (DifficultyManager.Instance != null)
+                    {
+                        duration = DifficultyManager.Instance.GetAlertDuration();
+                    }
+                    _alertTimer = duration;
+                }
+            }
         }
-        // 3. Player'ý Kaybettiyse Normal Devriyeye Dön
-        else if (!AwareOfPlayer && _currentState == EnemyState.Chase)
+        // 3. Player'Ä± Kaybettiyse En Son GÃ¶rÃ¼ldÃ¼ÄŸÃ¼ Yere Git veya Normal Devriyeye DÃ¶n
+        else if (!AwareOfPlayer && (_currentState == EnemyState.Chase || _currentState == EnemyState.Alert))
         {
-            _currentState = _isStationary ? EnemyState.Idle : EnemyState.Patrol;
-            if (!_isStationary) FindPatrolPointsInCurrentRoom(); 
+            if (_hasLastSeenPosition)
+            {
+                _currentState = EnemyState.InvestigateLastSeen;
+            }
+            else
+            {
+                _currentState = _isStationary ? EnemyState.Idle : EnemyState.Patrol;
+                if (!_isStationary) FindPatrolPointsInCurrentRoom(); 
+            }
         }
     }
     
@@ -159,9 +188,9 @@ public class PlayerAwarenessController : MonoBehaviour
 
         foreach (Collider2D item in foundItems)
         {
-            if (item.GetComponent<DropPistol>() != null) // Yerdeki silah mý?
+            if (item.GetComponent<DropPistol>() != null) // Yerdeki silah m ?
             {
-                // Silaha doðru arada baþka bloklayýcý duvar var mý kontrol et
+                // Silaha do ru arada ba ka bloklay c  duvar var m  kontrol et
                 RaycastHit2D hit = Physics2D.Linecast(transform.position, item.transform.position, LayerMask.GetMask("Obstacle", "Door"));
                 if (hit.collider == null)
                 {
@@ -183,6 +212,15 @@ public class PlayerAwarenessController : MonoBehaviour
         {
             _agent.isStopped = true; 
         }
+        else if (_currentState == EnemyState.Alert)
+        {
+            _agent.isStopped = true;
+            _alertTimer -= Time.deltaTime;
+            if (_alertTimer <= 0f)
+            {
+                _currentState = EnemyState.Chase;
+            }
+        }
         else if (_currentState == EnemyState.Chase)
         {
             _agent.speed = _chaseSpeed; 
@@ -190,30 +228,26 @@ public class PlayerAwarenessController : MonoBehaviour
             
             if (_playerTransform != null) 
             {
+                _agent.SetDestination(_playerTransform.position);
+                
                 float distanceToPlayer = Vector2.Distance(transform.position, _playerTransform.position);
                 
-                // Oyuncu menzildeyse durup ateþ et
+                // Oyuncu menzildeyse ateÅŸ et ama duraksama, kovalayarak devam et
                 if (distanceToPlayer <= _shootingRange)
                 {
-                    _agent.isStopped = true; 
-                    _enemyController.FireWeapon(); // ATEÞ ET
-                }
-                else
-                {
-                    _agent.isStopped = false;
-                    _agent.SetDestination(_playerTransform.position);
+                    _enemyController.FireWeapon(); // ATEÅž ET
                 }
             }
         }
         else if (_currentState == EnemyState.SearchWeapon)
         {
-            if (_targetDroppedWeapon == null) return; // Baþkasý almýþ veya kaybolmuþ olabilir
+            if (_targetDroppedWeapon == null) return; // Ba kas  alm   veya kaybolmu  olabilir
 
             _agent.speed = _chaseSpeed; 
             _agent.isStopped = false;
             _agent.SetDestination(_targetDroppedWeapon.transform.position);
 
-            // Silaha yeterince yakýnsa al
+            // Silaha yeterince yak nsa al
             if (Vector2.Distance(transform.position, _targetDroppedWeapon.transform.position) <= 1.5f)
             {
                 _enemyController.EquipWeapon(_targetDroppedWeapon);
@@ -227,7 +261,7 @@ public class PlayerAwarenessController : MonoBehaviour
 
             if (_playerTransform != null)
             {
-                // Oyuncunun tersi yönünü hesapla ve oraya koþ
+                // Oyuncunun tersi y n n  hesapla ve oraya ko 
                 Vector3 fleeDirection = (transform.position - _playerTransform.position).normalized;
                 Vector3 fleeTarget = transform.position + fleeDirection * 5f;
                 _agent.SetDestination(fleeTarget);
@@ -235,7 +269,7 @@ public class PlayerAwarenessController : MonoBehaviour
         }
         else if (_currentState == EnemyState.Patrol)
         {
-            _agent.speed = _patrolSpeed; // Devriye hýzýna geç
+            _agent.speed = _patrolSpeed; // Devriye h z na ge 
             
             if (_currentPatrolPoints.Count == 0) return;
 
@@ -243,10 +277,33 @@ public class PlayerAwarenessController : MonoBehaviour
             Transform targetPoint = _currentPatrolPoints[_currentPatrolIndex];
             _agent.SetDestination(targetPoint.position);
 
-            // Noktaya vardýysa sýradakine geç
+            // Noktaya vard ysa s radakine ge 
             if (Vector2.Distance(transform.position, targetPoint.position) < _patrolPointThreshold)
             {
                 _currentPatrolIndex = (_currentPatrolIndex + 1) % _currentPatrolPoints.Count;
+            }
+        }
+        else if (_currentState == EnemyState.InvestigateLastSeen)
+        {
+            _agent.speed = _chaseSpeed; 
+            _agent.isStopped = false;
+
+            if (_hasLastSeenPosition)
+            {
+                _agent.SetDestination(_lastSeenPosition);
+
+                float distanceToLastSeen = Vector2.Distance(transform.position, _lastSeenPosition);
+                if (distanceToLastSeen < _patrolPointThreshold)
+                {
+                    _hasLastSeenPosition = false;
+                    _currentState = _isStationary ? EnemyState.Idle : EnemyState.Patrol;
+                    if (!_isStationary) FindPatrolPointsInCurrentRoom();
+                }
+            }
+            else
+            {
+                _currentState = _isStationary ? EnemyState.Idle : EnemyState.Patrol;
+                if (!_isStationary) FindPatrolPointsInCurrentRoom();
             }
         }
     }
@@ -260,10 +317,10 @@ public class PlayerAwarenessController : MonoBehaviour
         {
             float distance = Vector2.Distance(transform.position, point.transform.position);
 
-            if (distance <= _roomSearchRadius) // Sadece belli bir yarýçaptakileri kontrol et
+            if (distance <= _roomSearchRadius) // Sadece belli bir yar  aptakileri kontrol et
             {
                 // Arada engel (Obstacle) yoksa listeye dahil et
-                // Burada da Inspector üzerinden belirlediðimiz LayerMask'i kullanmak daha tutarlý olur
+                // Burada da Inspector  zerinden belirledi imiz LayerMask'i kullanmak daha tutarl  olur
                 RaycastHit2D hit = Physics2D.Linecast(transform.position, point.transform.position, LayerMask.GetMask("Obstacle", "Door"));
 
                 if (hit.collider == null)
@@ -273,7 +330,7 @@ public class PlayerAwarenessController : MonoBehaviour
             }
         }
         
-        // Yeni bir devriye listesi oluþtuysa rastgele birinden baþla
+        // Yeni bir devriye listesi olu tuysa rastgele birinden ba la
         if (_currentPatrolPoints.Count > 0)
         {
              _currentPatrolIndex = Random.Range(0, _currentPatrolPoints.Count);
@@ -282,15 +339,15 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void RotateTowardsMovement()
     {
-        // 1. DURUM: Kovalama modunda ve ateþ etmek için durmuþsak direkt oyuncuya dön
-        if (_currentState == EnemyState.Chase && _agent.isStopped && _playerTransform != null)
+        // 1. DURUM: Kovalama veya Alert durumundaysak doÄŸrudan oyuncuya dÃ¶n
+        if ((_currentState == EnemyState.Chase || _currentState == EnemyState.Alert) && _playerTransform != null)
         {
             Vector2 targetDir = (_playerTransform.position - transform.position).normalized;
             float angle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg;
             float newAngle = Mathf.MoveTowardsAngle(_rigidbody.rotation, angle + _rotationOffset, _rotationSpeed * Time.deltaTime);
             _rigidbody.SetRotation(newAngle);
         }
-        // 2. DURUM: Normal hareket ediyorsa NavMesh'in hareket yönüne dön
+        // 2. DURUM: Normal hareket ediyorsa NavMesh'in hareket yÃ¶nÃ¼ne dÃ¶n
         else if (_agent.desiredVelocity.sqrMagnitude > 0.01f)
         {
             Vector2 targetDir = _agent.desiredVelocity;
@@ -312,24 +369,24 @@ public class PlayerAwarenessController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // 1. Oyuncuyu Fark Etme (Awareness) Alaný - Kýrmýzý Çember
+        // 1. Oyuncuyu Fark Etme (Awareness) Alan  - K rm z   ember
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _playerAwarenessDistance);
 
-        // 2. Devriye Noktalarýný Tarama Alaný (Room Search) - Mavi Çember
+        // 2. Devriye Noktalar n  Tarama Alan  (Room Search) - Mavi  ember
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, _roomSearchRadius);
 
-        // Eðer oyun çalýþýyorsa hedeflere doðru çizgiler çiz
+        // E er oyun  al   yorsa hedeflere do ru  izgiler  iz
         if (Application.isPlaying)
         {
-            // Kovalama Modu: Oyuncuya sarý bir çizgi çeker
+            // Kovalama Modu: Oyuncuya sar  bir  izgi  eker
             if (_currentState == EnemyState.Chase && _playerTransform != null)
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawLine(transform.position, _playerTransform.position);
             }
-            // Devriye Modu: Gittiði hedefe yeþil bir çizgi çeker
+            // Devriye Modu: Gitti i hedefe ye il bir  izgi  eker
             else if (_currentState == EnemyState.Patrol && _currentPatrolPoints.Count > 0)
             {
                 Transform targetPoint = _currentPatrolPoints[_currentPatrolIndex];
@@ -337,8 +394,14 @@ public class PlayerAwarenessController : MonoBehaviour
                 {
                     Gizmos.color = Color.green;
                     Gizmos.DrawLine(transform.position, targetPoint.position);
-                    Gizmos.DrawWireSphere(targetPoint.position, 0.3f); // Hedef noktayý da küçük bir topla belirginleþtir
-                }
+                    Gizmos.DrawWireSphere(targetPoint.position, 0.3f); // Hedef noktay  da k   k bir topla belirginle tir
+                }
+            }
+            else if (_currentState == EnemyState.InvestigateLastSeen && _hasLastSeenPosition)
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawLine(transform.position, _lastSeenPosition);
+                Gizmos.DrawWireSphere(_lastSeenPosition, 0.5f);
             }
         }
     }

@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6645998539831484098}
-  - component: {fileID: 1816114204920029960}
   - component: {fileID: 914003183465693561}
+  - component: {fileID: 1017763445245812708}
   - component: {fileID: 585013107443195664}
   - component: {fileID: 3705517421430388145}
   m_Layer: 6
@@ -35,7 +35,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1816114204920029960
+--- !u!114 &914003183465693561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688624912140836005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a195e9dad061a244ca36b9c31597589e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spinSpeed: 100
+  _stunKnockbackForce: 250
+  weaponType: 0
+--- !u!212 &1017763445245812708
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,33 +92,19 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1469565079
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -4854829337826818713, guid: 755d93b75b277254c8a6c37ea7e94ee7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.5, y: 0.4}
+  m_Size: {x: 0.6, y: 0.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &914003183465693561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8688624912140836005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a195e9dad061a244ca36b9c31597589e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _spinSpeed: 100
-  _stunKnockbackForce: 250
 --- !u!50 &585013107443195664
 Rigidbody2D:
   serializedVersion: 5
@@ -170,7 +171,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 0.6, y: 0.44}
-    newSize: {x: 0.5, y: 0.4}
+    newSize: {x: 0.6, y: 0.44}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0

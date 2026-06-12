@@ -103,10 +103,10 @@ TextureImporter:
       name: table_3_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 21
-        width: 27
-        height: 10
+        x: 1
+        y: 0
+        width: 26
+        height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -121,55 +121,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: table_3_1
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 11
-        width: 27
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c11aa422fde4454bb0caf041b973d0f
-      internalID: 1683483469
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: table_3_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1
-        width: 27
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 95f06c3fb8f107c4f968e9c16e54e3c2
-      internalID: 994591731
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b4bd51cac6913f8419ac0048d87b31d2
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -180,8 +136,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       table_3_0: 5585461391211756163
-      table_3_1: 1683483469
-      table_3_2: 994591731
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
@@ -8,48 +9,59 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private float _speed;
     [SerializeField] private float _smoothTime = 0.1f;
     [SerializeField] private float _rotationOffset = 0f;
-
-    // float yerine Vector2 kullanıyoruz. X sağ-sol, Y alt-üst sınırlarını belirleyecek.
     [SerializeField] private Vector2 _screenBorder = new Vector2(0.05f, 0.05f);
 
     [Header("Body Parts")]
-    [SerializeField] private Transform _torsoTransform; // Ust govde transformu
-    [SerializeField] private Animator _torsoAnimator;   // Ust govde animasyonlari (Atak vs)
-    [SerializeField] private Transform _legsTransform;  // Alt govde transformu
-    [SerializeField] private Animator _legsAnimator;    // Alt govde animasyonlari (Yurume vs)
+    [SerializeField] private Transform _torsoTransform;
+    [SerializeField] private Animator _torsoAnimator;
+    [SerializeField] private Transform _legsTransform;
+    [SerializeField] private Animator _legsAnimator;
 
-    [Header("Weapon Drop/Pickup Settings")]
-    [SerializeField] private GameObject _dropPistolPrefab;
+    [Header("Weapon Dynamic Settings")]
+    [SerializeField] private List<WeaponPrefabMap> _weaponPrefabs; // Tüm silahların prefab listesi
     [SerializeField] private Transform _dropPoint;
     [SerializeField] private float _throwForce = 15f;
     [SerializeField] private float _pickupRadius = 1.5f;
 
     [Header("Finisher Settings")]
-    [SerializeField] private float _finisherRange = 1.5f; 
+    [SerializeField] private float _finisherRange = 1.5f;
+    [SerializeField] private float _maxFinisherStamina = 100f;
+    private float _finisherStamina = 100f;
+
+    public float FinisherStaminaRatio => _finisherStamina / _maxFinisherStamina;
+    public float CurrentFinisherStamina => _finisherStamina;
 
     [Header("Punch Settings")]
-    [SerializeField] private float _punchRange = 1f; 
-    [SerializeField] private float _punchRadius = 0.5f; 
-    [SerializeField] private float _punchCooldown = 0.25f; 
-    [SerializeField] private float _punchKnockbackForce = 5f; 
+    [SerializeField] private float _punchRange = 1f;
+    [SerializeField] private float _punchRadius = 0.5f;
+    [SerializeField] private float _punchCooldown = 0.25f;
+    [SerializeField] private float _punchKnockbackForce = 5f;
     [SerializeField] private Transform _punchPoint;
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip _punchHitSound;
+    [SerializeField] private AudioClip _punchWhooshSound;
+    [SerializeField] [Range(0f, 1f)] private float _punchWhooshVolume = 0.8f;
+    [SerializeField] private AudioClip _finisherBoneBreakSound;
+    [SerializeField] [Range(0f, 1f)] private float _finisherVolume = 1f;
+    [SerializeField] private UnityEngine.Audio.AudioMixerGroup _sfxGroup;
+    private AudioSource _audioSource;
 
     private Rigidbody2D _rigidbody;
     private Camera _mainCamera;
 
-    public Weapon weapon; 
-    public bool HasWeapon { get; private set; } = false; 
+    public Weapon weapon { get; private set; } // Set işlemi private yapıldı
+    public bool HasWeapon { get; private set; } = false;
 
     private Vector2 _movementInput;
     private Vector2 _currentVelocity;
 
     public bool IsPerformingFinisher { get; private set; } = false;
-    private EnemyController _finisherTarget = null; 
+    private EnemyController _finisherTarget = null;
 
     private float _nextPunchTime = 0f;
-    private bool _isRightPunchNext = true; 
-    
-    private bool _isPunching = false; 
+    private bool _isRightPunchNext = true;
+    private bool _isPunching = false;
     private float _punchEndTime = 0f;
 
     private VirtualCursor _virtualCursor;
@@ -57,43 +69,74 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _mainCamera = Camera.main; 
+        _mainCamera = Camera.main;
 
-        weapon = GetComponentInChildren<Weapon>(true); 
+        // Eğer sahne başlarken Torso altında halihazırda bir silah varsa onu otomatik eşle
+        weapon = GetComponentInChildren<Weapon>(true);
+        if (weapon != null)
+        {
+            HasWeapon = true;
+            weapon.gameObject.SetActive(true);
+        }
+        else
+        {
+            HasWeapon = false;
+        }
 
-        // Crosshair'i sahnede bul (Awake icine ekle)
-        _virtualCursor = Object.FindFirstObjectByType<VirtualCursor>(); 
+        _virtualCursor = Object.FindAnyObjectByType<VirtualCursor>();
+
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        _audioSource.playOnAwake = false;
+        _audioSource.spatialBlend = 0f;
+        if (_sfxGroup != null)
+        {
+            _audioSource.outputAudioMixerGroup = _sfxGroup;
+        }
     }
 
     private void Start()
     {
-        if (!HasWeapon && weapon != null)
-        {
-            weapon.gameObject.SetActive(false); 
-        }
+        // Başlangıçta silah yoksa boş başlatıyoruz
     }
 
     private void Update()
     {
         if (IsDead) return;
 
-        if (_isPunching && Time.time >= _punchEndTime) 
+        if (_isPunching && Time.time >= _punchEndTime)
         {
             _isPunching = false;
+        }
+
+        // Finisher stamina regeneration
+        if (!IsPerformingFinisher)
+        {
+            float regenRate = 10f;
+            if (DifficultyManager.Instance != null)
+            {
+                regenRate = DifficultyManager.Instance.GetFinisherRegenRate();
+            }
+            _finisherStamina = Mathf.Min(_finisherStamina + regenRate * Time.deltaTime, _maxFinisherStamina);
         }
 
         ReadInput();
         UpdateAnimations();
     }
 
+    public void AddFinisherStamina(float amount)
+    {
+        _finisherStamina = Mathf.Min(_finisherStamina + amount, _maxFinisherStamina);
+    }
+
     private void FixedUpdate()
     {
-        if (IsDead || IsPerformingFinisher) return; 
+        if (IsDead || IsPerformingFinisher) return;
 
-        // Hedeflenen hiz
         Vector2 targetVelocity = _movementInput * _speed;
-
-        // Mevcut hizdan hedeflenen hiza yumusak bir gecis
         _rigidbody.linearVelocity = Vector2.SmoothDamp(
             _rigidbody.linearVelocity,
             targetVelocity,
@@ -101,7 +144,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             _smoothTime);
 
         PreventPlayerGoingOffScreen();
-        RotateLegs(); // Bacakları hareket yönüne çevir
+        RotateLegs();
     }
 
     private void ReadInput()
@@ -112,7 +155,7 @@ public class PlayerController : MonoBehaviour, IDamageable
             {
                 ExecuteFinisherAction();
             }
-            return; 
+            return;
         }
 
         RotateTorsoTowardsMouse();
@@ -124,12 +167,10 @@ public class PlayerController : MonoBehaviour, IDamageable
 
         if (Mouse.current != null)
         {
-            if (HasWeapon)
+            if (HasWeapon && weapon != null)
             {
                 if (Mouse.current.leftButton.isPressed)
                 {
-                    // weapon.TryFire() metodu mermi çıkarsa true döner.
-                    // Çıktıysa "shoot" trigger'ını tetikle.
                     if (weapon.TryFire())
                     {
                         if (_torsoAnimator != null)
@@ -160,10 +201,8 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (_virtualCursor != null)
         {
-            // Artık direkt VirtualCursor objesine bakacak (Ekrana değil, dünyaya)
             Vector2 lookDirection = _virtualCursor.transform.position - _torsoTransform.position;
             float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg;
-            
             _torsoTransform.rotation = Quaternion.Euler(0, 0, angle + _rotationOffset);
         }
     }
@@ -172,7 +211,6 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (_movementInput.sqrMagnitude > 0.01f)
         {
-            // Bacaklar hareket tuşlarının yönüne (WASD) bakar
             float angle = Mathf.Atan2(_movementInput.y, _movementInput.x) * Mathf.Rad2Deg;
             _legsTransform.rotation = Quaternion.Euler(0, 0, angle + _rotationOffset);
         }
@@ -181,29 +219,39 @@ public class PlayerController : MonoBehaviour, IDamageable
     private void ExecutePunch()
     {
         _isPunching = true;
-        _punchEndTime = Time.time + _punchCooldown; 
+        _punchEndTime = Time.time + _punchCooldown;
 
-        // Artik SADECE Torso (Ust govde) uzerinde yumruk animasyonu calacak
-        bool isMoving = _movementInput.sqrMagnitude > 0.01f;
-        string animName = "";
+        string animName = _isRightPunchNext ? "PlayerTorsoIdlePunchRight" : "PlayerTorsoIdlePunchLeft";
 
-        animName = _isRightPunchNext ? "PlayerTorsoIdlePunchRight" : "PlayerTorsoIdlePunchLeft";
-
-        if(_torsoAnimator != null)
+        if (_torsoAnimator != null)
             _torsoAnimator.Play(animName, 0, 0f);
 
         _isRightPunchNext = !_isRightPunchNext;
 
         Vector2 punchOrigin = _punchPoint != null ? (Vector2)_punchPoint.position : (Vector2)transform.position + (Vector2)_torsoTransform.right * _punchRange;
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(punchOrigin, _punchRadius);
+        bool hitEnemy = false;
         foreach (Collider2D enemyCollider in hitEnemies)
         {
             EnemyController enemy = enemyCollider.GetComponent<EnemyController>();
-            
-            if (enemy != null && enemy.enabled)
+            if (enemy != null && enemy.enabled && !enemy.IsCurrentlyStunned)
             {
                 Vector2 knockbackDir = (enemy.transform.position - transform.position).normalized;
                 enemy.Stun(knockbackDir, _punchKnockbackForce);
+                hitEnemy = true;
+            }
+        }
+
+        if (_audioSource != null)
+        {
+            if (hitEnemy)
+            {
+                // Hit sound will play on the enemy's AudioSource inside enemy.Stun()
+            }
+            else
+            {
+                if (_punchWhooshSound != null)
+                    _audioSource.PlayOneShot(_punchWhooshSound, _punchWhooshVolume);
             }
         }
     }
@@ -212,45 +260,43 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         bool isMoving = _movementInput != Vector2.zero;
 
-        // Bacak Animasyonları
         if (_legsAnimator != null)
         {
             _legsAnimator.SetBool("isMoving", isMoving);
         }
 
-        // Ust Govde Animasyonları
         if (_torsoAnimator != null)
         {
             _torsoAnimator.SetBool("isMoving", isMoving);
-            _torsoAnimator.SetBool("hasWeapon", HasWeapon); 
+            _torsoAnimator.SetBool("hasWeapon", HasWeapon);
         }
     }
 
     private void TryInitiateFinisher()
     {
+        if (_finisherStamina < _maxFinisherStamina) return;
+
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _finisherRange);
         foreach (Collider2D coll in colliders)
         {
             EnemyController enemy = coll.GetComponent<EnemyController>();
-            
             if (enemy != null && enemy.enabled && enemy.IsCurrentlyStunned && !enemy.IsBeingFinished)
             {
                 IsPerformingFinisher = true;
                 _finisherTarget = enemy;
+                _finisherStamina = 0f; // Reset stamina to 0 on use!
                 _movementInput = Vector2.zero;
-                
+
                 _rigidbody.linearVelocity = Vector2.zero;
                 _rigidbody.angularVelocity = 0f;
 
                 transform.position = enemy.transform.position - (enemy.transform.up * 0.2f);
-
-                // Finisher durumunda Torso'yu da hedefe doğru çevir
                 _torsoTransform.rotation = enemy.GetComponent<Rigidbody2D>().transform.rotation;
-                
-                if(_torsoAnimator != null) _torsoAnimator.SetBool("isFinisherReady", true); 
-                if(_legsAnimator != null) _legsAnimator.SetBool("isFinisherReady", true); // Varsa alt kısım da diz çöksün
-                
-                _finisherTarget.StartBeingFinished();     
+
+                if (_torsoAnimator != null) _torsoAnimator.SetBool("isFinisherReady", true);
+                if (_legsAnimator != null) _legsAnimator.SetBool("isFinisherReady", true);
+
+                _finisherTarget.StartBeingFinished();
                 break;
             }
         }
@@ -260,51 +306,116 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         if (_finisherTarget != null)
         {
-            if(_torsoAnimator != null) _torsoAnimator.SetTrigger("executeFinisher");
-            
+            if (_torsoAnimator != null) _torsoAnimator.SetTrigger("executeFinisher");
             _finisherTarget.ExecuteFinisherDeath();
-            
+
+            if (_audioSource != null && _finisherBoneBreakSound != null)
+            {
+                _audioSource.PlayOneShot(_finisherBoneBreakSound, _finisherVolume);
+            }
+
             IsPerformingFinisher = false;
             _finisherTarget = null;
-            if(_torsoAnimator != null) _torsoAnimator.SetBool("isFinisherReady", false); 
-            if(_legsAnimator != null) _legsAnimator.SetBool("isFinisherReady", false);
+            if (_torsoAnimator != null) _torsoAnimator.SetBool("isFinisherReady", false);
+            if (_legsAnimator != null) _legsAnimator.SetBool("isFinisherReady", false);
         }
     }
 
     private void PreventPlayerGoingOffScreen()
     {
+        // Eğer oyuncu shift'e basıp etrafa bakıyorsa (görüş açısını esnetiyorsa), ekran dışına çıkma sınırlandırmasını geçici olarak devre dışı bırakıyoruz.
+        if (_virtualCursor != null && _virtualCursor.IsLookingAhead) return;
+
         Vector3 screenPosition = _mainCamera.WorldToViewportPoint(transform.position);
         screenPosition.x = Mathf.Clamp(screenPosition.x, _screenBorder.x, 1f - _screenBorder.x);
         screenPosition.y = Mathf.Clamp(screenPosition.y, _screenBorder.y, 1f - _screenBorder.y);
         _rigidbody.position = _mainCamera.ViewportToWorldPoint(screenPosition);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (IsDead) return;
-
-        // Player'ın düşmana sadece dokunduğunda ölmesi ("Tek yeme") mantığı kaldırıldı.
-        // Artık düşmanlar onu sadece ateş ederek veya (varsa) yumruk atarak öldürebilecek.
-    }
+    private void OnCollisionEnter2D(Collision2D collision) { }
 
     private void OnMove(InputValue inputValue)
     {
         _movementInput = inputValue.Get<Vector2>();
     }
 
+    // Yeni Yardımcı Metot: Map listesinden istenen tipe ait prefaba ulaşır
+    private WeaponPrefabMap? GetWeaponMap(WeaponType type)
+    {
+        foreach (var map in _weaponPrefabs)
+        {
+            if (map.type == type) return map;
+        }
+        return null;
+    }
+
+    // Yeni Metot: Dinamik silah kuşanma
+    public void EquipWeapon(WeaponType type, int ammoCount = -1)
+    {
+        if (HasWeapon && weapon != null)
+        {
+            ThrowWeapon(); // Elimizde silah varsa yere at
+        }
+
+        WeaponPrefabMap? map = GetWeaponMap(type);
+        if (map.HasValue && map.Value.equippedPrefab != null)
+        {
+            // Silahı Torso'nun altına instantiate et
+            GameObject weaponObj = Instantiate(map.Value.equippedPrefab, _torsoTransform);
+            weaponObj.transform.localPosition = Vector3.zero;
+            weaponObj.transform.localRotation = Quaternion.identity;
+            weaponObj.transform.localScale = Vector3.one;
+
+            weapon = weaponObj.GetComponent<Weapon>();
+            HasWeapon = true;
+
+            if (weapon != null)
+            {
+                if (ammoCount >= 0)
+                {
+                    weapon.CurrentAmmo = ammoCount; // Kalan mermiyi aktar
+                }
+                else
+                {
+                    weapon.Reload(); // Mermiyi doldur
+                }
+            }
+
+            if (_torsoAnimator != null)
+            {
+                _torsoAnimator.SetBool("hasWeapon", true);
+            }
+        }
+    }
+
     private void ThrowWeapon()
     {
-        HasWeapon = false;
-        weapon.gameObject.SetActive(false); 
+        if (!HasWeapon || weapon == null) return;
 
-        Vector2 dropOrigin = _dropPoint != null ? (Vector2)_dropPoint.position : (Vector2)transform.position; 
-        GameObject droppedPistol = Instantiate(_dropPistolPrefab, dropOrigin, _torsoTransform.rotation);
-        
-        DropPistol dropScript = droppedPistol.GetComponent<DropPistol>();
-        if (dropScript != null)
+        HasWeapon = false;
+
+        WeaponPrefabMap? map = GetWeaponMap(weapon.weaponType);
+        if (map.HasValue && map.Value.dropPrefab != null)
         {
-            // Silahı Torso'nun yönüne doğru fırlat
-            dropScript.Throw(_torsoTransform.right, _throwForce); 
+            Vector2 dropOrigin = _dropPoint != null ? (Vector2)_dropPoint.position : (Vector2)transform.position;
+            GameObject droppedWeaponObj = Instantiate(map.Value.dropPrefab, dropOrigin, _torsoTransform.rotation);
+            DropPistol dropScript = droppedWeaponObj.GetComponent<DropPistol>();
+
+            if (dropScript != null)
+            {
+                // Silahın sprite'ını ve tipini, ayrıca kalan mermisini yerdeki silaha aktar
+                dropScript.SetupDrop(weapon.dropSprite, weapon.weaponType, weapon.CurrentAmmo);
+                dropScript.Throw(_torsoTransform.right, _throwForce);
+            }
+        }
+
+        // Elimizdeki silahı yok et
+        Destroy(weapon.gameObject);
+        weapon = null;
+
+        if (_torsoAnimator != null)
+        {
+            _torsoAnimator.SetBool("hasWeapon", false);
         }
     }
 
@@ -316,10 +427,10 @@ public class PlayerController : MonoBehaviour, IDamageable
             DropPistol droppedWeapon = coll.GetComponent<DropPistol>();
             if (droppedWeapon != null)
             {
+                // Yerdeki silahın tipine ve mermisine göre yeni silahı kuşan!
+                EquipWeapon(droppedWeapon.weaponType, droppedWeapon.currentAmmo);
                 Destroy(droppedWeapon.gameObject);
-                HasWeapon = true;
-                weapon.gameObject.SetActive(true); 
-                break; 
+                break;
             }
         }
     }
@@ -337,7 +448,11 @@ public class PlayerController : MonoBehaviour, IDamageable
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.simulated = false;
 
-        if (weapon != null) weapon.gameObject.SetActive(false);
+        if (weapon != null)
+        {
+            Destroy(weapon.gameObject); // Ölünce silahı tamamen yok et
+            weapon = null;
+        }
 
         if (_torsoAnimator != null)
         {
@@ -345,31 +460,25 @@ public class PlayerController : MonoBehaviour, IDamageable
             _torsoAnimator.SetBool("isMoving", false);
             _torsoAnimator.Play("PlayerDeath" + Random.Range(1, 5));
         }
-        
+
         if (_legsAnimator != null)
         {
-            // Bacakları muhtemelen ölümde gizlemek veya yatan bacak sprite'i koymak isteyeceksiniz.
-            _legsAnimator.gameObject.SetActive(false); 
+            _legsAnimator.gameObject.SetActive(false);
         }
 
         Collider2D collider = GetComponent<Collider2D>();
         if (collider != null) collider.enabled = false;
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        // Artık Torso içindeki sprite'ı almak gerekebilir
-        if(spriteRenderer == null) spriteRenderer = _torsoTransform.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) spriteRenderer = _torsoTransform.GetComponent<SpriteRenderer>();
         if (spriteRenderer != null) spriteRenderer.sortingLayerName = "Corpses";
 
         this.enabled = false;
     }
 
-    // Mermi ya da başka hasar görebilen IDamageable olaylarında tetiklenecek fonksiyon (TEK YEME)
     public void TakeDamage(int damage, Vector2 hitPoint, Vector2 hitDirection)
     {
         if (IsDead) return;
-
-        // Player'ın elindeki Die() mantığını buraya direkt entegre ediyoruz 
-        // Veya "Die(hitPoint, hitDirection);" metodunu çağırıyoruz:
-        Die(hitPoint, hitDirection); 
+        Die(hitPoint, hitDirection);
     }
 }

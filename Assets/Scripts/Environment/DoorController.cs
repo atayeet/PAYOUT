@@ -6,39 +6,58 @@ using UnityEngine;
 public class DoorController : MonoBehaviour
 {
     [Header("Door Motor Settings")]
-    [Tooltip("Motorun kapýyý açma hýzý (Derece/Saniye)")]
+    [Tooltip("Motorun kapï¿½yï¿½ aï¿½ma hï¿½zï¿½ (Derece/Saniye)")]
     [SerializeField] private float _motorSpeed = 500f;
     
-    [Tooltip("Motorun uygulayacaðý güç (Tork)")]
+    [Tooltip("Motorun uygulayacaï¿½ï¿½ gï¿½ï¿½ (Tork)")]
     [SerializeField] private float _motorTorque = 1000f;
     
-    [Tooltip("Kapýnýn açýk kalacaðý süre (Saniye)")]
+    [Tooltip("Kapï¿½nï¿½n aï¿½ï¿½k kalacaï¿½ï¿½ sï¿½re (Saniye)")]
     [SerializeField] private float _closeDelay = 3f;
 
     [Header("Stun Settings")]
-    [Tooltip("Kapýnýn çarpacaðý alaný belirleyen yarýçap")]
+    [Tooltip("Kapï¿½nï¿½n ï¿½arpacaï¿½ï¿½ alanï¿½ belirleyen yarï¿½ï¿½ap")]
     [SerializeField] private float _hitRadius = 1.5f;
 
-    [Tooltip("Düþmaný savurma gücü")]
+    [Tooltip("Dï¿½ï¿½manï¿½ savurma gï¿½cï¿½")]
     [SerializeField] private float _stunKnockbackForce = 12f;
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip _doorSound;
+    [SerializeField] [Range(0f, 2f)] private float _doorSoundVolume = 1.2f;
+    [SerializeField] private UnityEngine.Audio.AudioMixerGroup _sfxGroup;
+    private AudioSource _audioSource;
 
     private HingeJoint2D _hingeJoint;
     private Quaternion _closedRotation;
     private bool _isOpen = false;
+    private bool _canPlaySound = true;
 
     private void Awake()
     {
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource == null)
+        {
+            _audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        _audioSource.playOnAwake = false;
+        _audioSource.spatialBlend = 1.0f;
+        if (_sfxGroup != null)
+        {
+            _audioSource.outputAudioMixerGroup = _sfxGroup;
+        }
+
         _hingeJoint = GetComponent<HingeJoint2D>();
         _closedRotation = transform.rotation;
         
-        // Baþlangýçta motor kapalý olsun
+        // Baï¿½langï¿½ï¿½ta motor kapalï¿½ olsun
         _hingeJoint.useMotor = false;
         
-        // KAPALI DURUMDAYKEN KAPIYI KÝLÝTLE (Fizik motoru ittirmesin diye limitleri 0 yapýyoruz)
+        // KAPALI DURUMDAYKEN KAPIYI Kï¿½Lï¿½TLE (Fizik motoru ittirmesin diye limitleri 0 yapï¿½yoruz)
         LockDoorPhysically();
     }
 
-    // Kapýyý fiziksel olarak kilitleyen yardýmcý metot
+    // Kapï¿½yï¿½ fiziksel olarak kilitleyen yardï¿½mcï¿½ metot
     private void LockDoorPhysically()
     {
         _hingeJoint.useLimits = true;
@@ -53,9 +72,18 @@ public class DoorController : MonoBehaviour
         bool isPlayer = collision.gameObject.GetComponent<PlayerController>() != null;
         bool isEnemy = collision.gameObject.GetComponent<EnemyController>() != null;
 
-        // Kapý kapalýysa ve çarpan obje Player veya Enemy ise
+        // Kapï¿½ kapalï¿½ysa ve ï¿½arpan obje Player veya Enemy ise
         if (!_isOpen && (isPlayer || isEnemy))
         {
+            if (_canPlaySound)
+            {
+                if (_audioSource != null && _doorSound != null)
+                {
+                    _audioSource.PlayOneShot(_doorSound, _doorSoundVolume);
+                }
+                _canPlaySound = false;
+            }
+
             Vector2 hitDirection = (transform.position - collision.transform.position).normalized;
 
             float dotProduct = Vector2.Dot(transform.right, hitDirection);
@@ -63,6 +91,17 @@ public class DoorController : MonoBehaviour
             float speedSign = dotProduct > 0 ? -1f : 1f;
 
             StartCoroutine(DoorRoutine(hitDirection, speedSign, isPlayer));
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        bool isPlayer = collision.gameObject.GetComponent<PlayerController>() != null;
+        bool isEnemy = collision.gameObject.GetComponent<EnemyController>() != null;
+
+        if (isPlayer || isEnemy)
+        {
+            _canPlaySound = true;
         }
     }
 
@@ -75,7 +114,7 @@ public class DoorController : MonoBehaviour
             CheckForEnemiesToStun(knockbackDirection);
         }
 
-        // AÇILIRKEN JOINT LIMITLERINI ÝSTENÝLEN AÇILARA AYARLIYORUZ
+        // Aï¿½ILIRKEN JOINT LIMITLERINI ï¿½STENï¿½LEN Aï¿½ILARA AYARLIYORUZ
         JointAngleLimits2D limits = _hingeJoint.limits;
         if (speedSign > 0)
         {
@@ -89,7 +128,7 @@ public class DoorController : MonoBehaviour
         }
         _hingeJoint.limits = limits;
 
-        // Motoru açýlýþ için çalýþtýr
+        // Motoru aï¿½ï¿½lï¿½ï¿½ iï¿½in ï¿½alï¿½ï¿½tï¿½r
         _hingeJoint.useMotor = true;
         JointMotor2D motor = _hingeJoint.motor;
         motor.maxMotorTorque = _motorTorque;
@@ -98,11 +137,11 @@ public class DoorController : MonoBehaviour
 
         yield return new WaitForSeconds(_closeDelay);
 
-        // Kapanýþ için motoru tam ters yöne ayarla
+        // Kapanï¿½ï¿½ iï¿½in motoru tam ters yï¿½ne ayarla
         motor.motorSpeed = -(_motorSpeed * speedSign);
         _hingeJoint.motor = motor;
 
-        // Kapýnýn açýsal olarak 0'a (kapanma notkasýna) yakýnlaþmasýný bekle
+        // Kapï¿½nï¿½n aï¿½ï¿½sal olarak 0'a (kapanma notkasï¿½na) yakï¿½nlaï¿½masï¿½nï¿½ bekle
         while (Mathf.Abs(_hingeJoint.jointAngle) > 2f)
         {
             yield return null;
@@ -110,7 +149,7 @@ public class DoorController : MonoBehaviour
 
         // KAPANDI! YAPILMASI GEREKENLER:
 
-        // 1. Kapýyý fiziksel ittirmelere karþý tekrar tamamen kilitliyoruz. (min: 0, max: 0)
+        // 1. Kapï¿½yï¿½ fiziksel ittirmelere karï¿½ï¿½ tekrar tamamen kilitliyoruz. (min: 0, max: 0)
         LockDoorPhysically();
         
         // 2. Motoru tamamen durdur
@@ -118,7 +157,7 @@ public class DoorController : MonoBehaviour
         _hingeJoint.motor = motor;
         _hingeJoint.useMotor = false;
         
-        // 3. Fiziksel olarak Rigidbody hýzlarýný sil ve rotasyonu tamamen "Baþlangýç" rotasyonuna eþitle
+        // 3. Fiziksel olarak Rigidbody hï¿½zlarï¿½nï¿½ sil ve rotasyonu tamamen "Baï¿½langï¿½ï¿½" rotasyonuna eï¿½itle
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {

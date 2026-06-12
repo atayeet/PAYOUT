@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: building_washroom_background_0
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 4604786917759886275, guid: 0d7d4cf2df40947439f90e8c0e107c68, type: 3}
-  m_Color: {r: 0.5882353, g: 0.5882353, b: 0.5882353, a: 1}
+  m_Sprite: {fileID: 4604786917759886275, guid: 231c1b52594b0914489ee4f69c3fb46f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0

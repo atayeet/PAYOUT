@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem; // Projenizdeki yeni Input System için gerekli
+using UnityEngine.InputSystem; // Projenizdeki yeni Input System iÃ§in gerekli
 
 public class PauseMenuManager : MonoBehaviour
 {
@@ -8,22 +8,23 @@ public class PauseMenuManager : MonoBehaviour
 
     [SerializeField] private GameObject _pauseMenuUI;
     [SerializeField] private GameObject _restartTextUI;
+    [SerializeField] private GameObject _settingsPanel;
     
     private PlayerController _playerController;
 
     private void Start()
     {
-        // Oyun başladığında Pause menüsünün gizli olduğundan emin olun
+        // Oyun baÅŸladÄ±ÄŸÄ±nda Pause menÃ¼sÃ¼nÃ¼n gizli olduÄŸundan emin olun
         if (_pauseMenuUI != null) _pauseMenuUI.SetActive(false);
         
-        // Oyun başında Restart yazısını da gizle
+        // Oyun baÅŸÄ±nda Restart yazÄ±sÄ±nÄ± da gizle
         if (_restartTextUI != null) _restartTextUI.SetActive(false);
 
         Time.timeScale = 1f;
         GameIsPaused = false;
 
-        // Sahnede bulunan PlayerController'ı bularak referansını al
-        _playerController = Object.FindFirstObjectByType<PlayerController>();
+        // Sahnede bulunan PlayerController'Ä± bularak referansÄ±nÄ± al
+        _playerController = Object.FindAnyObjectByType<PlayerController>();
     }
 
     private void Update()
@@ -34,11 +35,17 @@ public class PauseMenuManager : MonoBehaviour
 
     private void ReadInputOnPause()
     {
-        // ESC tuşuna basılıp basılmadığını kontrol et
+        // ESC tuÅŸuna basÄ±lÄ±p basÄ±lmadÄ±ÄŸÄ±nÄ± kontrol et
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            // Oyuncu öldüyse pause menüsünün açılmasını engelle
+            // Oyuncu Ã¶ldÃ¼yse pause menÃ¼sÃ¼nÃ¼n aÃ§Ä±lmasÄ±nÄ± engelle
             if (_playerController != null && _playerController.IsDead) return;
+
+            if (_settingsPanel != null && _settingsPanel.activeSelf)
+            {
+                _settingsPanel.SetActive(false);
+                return;
+            }
 
             if (GameIsPaused)
             {
@@ -65,9 +72,9 @@ public class PauseMenuManager : MonoBehaviour
                 Time.timeScale = 1f; 
                 GameIsPaused = false;
                 
-                // DEĞİŞEN KISIM: Additive sistem olduğu için, 
-                // doğrudan "CoreScene" i baştan yükleyip her şeyi sıfırlıyoruz.
-                // LevelManager statik tuttuğu isim sayesinde oyuncuyu doğru haritada spawn edecek.
+                // DEÄÄ°ÅEN KISIM: Additive sistem olduÄŸu iÃ§in, 
+                // doÄŸrudan "CoreScene" i baÅŸtan yÃ¼kleyip her ÅŸeyi sÄ±fÄ±rlÄ±yoruz.
+                // LevelManager statik tuttuÄŸu isim sayesinde oyuncuyu doÄŸru haritada spawn edecek.
                 SceneManager.LoadScene("CoreScene"); 
             }
         }
@@ -90,7 +97,7 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 0f;  
         GameIsPaused = true;
 
-        // Fareyi görünür ve serbest yap (Menü kullanımı için)
+        // Fareyi gÃ¶rÃ¼nÃ¼r ve serbest yap (MenÃ¼ kullanÄ±mÄ± iÃ§in)
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
@@ -100,7 +107,7 @@ public class PauseMenuManager : MonoBehaviour
         Time.timeScale = 1f;
         GameIsPaused = false;
 
-        // Ana menüye dönerken fare imlecini serbest bırak
+        // Ana menÃ¼ye dÃ¶nerken fare imlecini serbest bÄ±rak
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
