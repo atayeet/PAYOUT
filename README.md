@@ -1,5 +1,7 @@
 # PAYOUT 💥
 
+**Türkçe** · [English](README.en.md)
+
 [![Unity 6](https://img.shields.io/badge/Unity-6000.4.11f1-blue.svg?logo=unity)](https://unity.com/)
 [![Render Pipeline](https://img.shields.io/badge/Render%20Pipeline-URP%202D-orange.svg)](https://unity.com/srp/Universal-Render-Pipeline)
 [![C#](https://img.shields.io/badge/Language-C%23%2010.0-purple.svg?logo=c-sharp)](https://docs.microsoft.com/en-us/dotnet/csharp/)
@@ -10,34 +12,21 @@
 
 ---
 
-## 🌐 English Summary (Executive Overview)
-
-**PAYOUT** is an adrenaline-fueled, high-lethality 2D top-down shooter built on Unity 6 URP. Every bullet is deadly, reaction times are tested, and quick restarts keep the tension unbroken.
-
-### Key Features (English)
-* **Decoupled Combat Controls:** Legs navigate smoothly via `WASD` while the torso and aiming angle lock independently to a custom clamped virtual crosshair (`VirtualCursor`).
-* **Tactical Look-Ahead (`Shift`):** Holding Shift extends aiming range and dynamically pans the Cinemachine camera ahead, enabling room scouting without getting trapped in viewport bounds.
-* **Punch, Stun & Brutal Finishers:** Unarmed melee punches alternate between hands to knock down and stun foes. Trigger cinematic execution finishers (`Space` + `Left Click`) to snap bones, spray blood, and regenerate finisher stamina.
-* **Throw & Scavenge Weapons:** Chuck your empty or loaded weapon with `Right Click` to knock enemies out cold, pick up any dropped gun from the floor, and retain exact ammo counts.
-* **Reactive AI Architecture:** Enemies utilize 2D NavMesh navigation with multi-state awareness (`Patrol`, `Alert`, `Chase`, `InvestigateLastSeen`, `SearchWeapon`, `Flee`). If disarmed, they sprint toward the nearest dropped weapon or flee in panic.
-* **Interactive Environment:** Kick doors open via physics motors (`HingeJoint2D`) to stun lurking guards, and utilize smart proximity lamps that react to living entities and line-of-sight.
-* **Modular Additive Scene Architecture:** A persistent master `CoreScene` manages audio, cameras, HUD, and object pools, while individual levels (`Level_1`, `Level_2`, `Level_3`) load additively with seamless fade transitions.
-
-### Default Keybindings (Quick Reference)
-| Key | Action |
-| :--- | :--- |
-| **W, A, S, D** | Move Player Legs |
-| **Mouse Aim** | Rotate Torso / Direct Virtual Crosshair |
-| **Left Click** | Fire Equipped Weapon / Punch (if unarmed) / Execute Finisher |
-| **Right Click** | Throw Held Weapon (stuns foes) / Pickup Weapon from Floor |
-| **Space** | Initiate Execution Finisher on Stunned Enemy |
-| **Left / Right Shift** | Look-Ahead (Extends aim & offsets camera forward) |
-| **R** | Instant Quick Restart (after death) |
-| **ESC** | Pause Menu / Settings |
+## 📖 İçindekiler
+- [Oyun Hakkında](#-oyun-hakkında)
+- [Temel Oynanış Mekanikleri](#-temel-oynanış-mekanikleri)
+- [Kontroller](#-kontroller)
+- [Cephanelik](#-cephanelik-weapons)
+- [Düşman Yapay Zekası](#-düşman-yapay-zekası-reactive-ai)
+- [Zorluk Seviyeleri](#-zorluk-seviyeleri-difficulty-settings)
+- [Dokümantasyon](#-dokümantasyon-proje-belgeleri)
+- [Teknik Mimari ve Dosya Yapısı](#-teknik-mimari-ve-dosya-yapısı)
+- [Kurulum ve Çalıştırma](#-kurulum-ve-çalıştırma-getting-started)
+- [Lisans ve Telif Hakları](#-lisans--telif-hakları)
 
 ---
 
-## 🎮 Oyun Hakkında (Turkish Overview)
+## 🎮 Oyun Hakkında
 
 PAYOUT; hız, refleks, taktiksel doğaçlama ve acımasız şiddet üzerine inşa edilmiş bir oda temizleme simülasyonudur. Her oda bir bulmaca, her düşman saniyeler içinde çözülmesi gereken ölümcül bir tehdittir.
 
@@ -47,14 +36,14 @@ Tek bir mermiyle ölebilir, merminiz bittiğinde düşmana yumruk atabilir, elin
 
 ## ⚡ Temel Oynanış Mekanikleri
 
-### 1. Bağımsız Gövde ve Bacak Kontrolleri
+### 1. Bağımsız Gövde ve Bacak Kontrolleri (Decoupled Movement)
 Oyuncunun bacakları dünya ekseninde `WASD` yönünde koşarken, üst gövde fare imlecine (`VirtualCursor`) kilitlenir. Geriye koşarken ileriye ateş edebilir veya köşe başlarında geri çekilerek koridorları tarayabilirsiniz.
 
 ### 2. İleriye Bakış (Shift Mekaniği - Look-Ahead)
 `Shift` tuşuna basılı tutulduğunda:
 * Sanal nişangahın oyuncudan uzaklaşma sınırı genişler (`7m` $\rightarrow$ `12m`).
 * Cinemachine 2D kamerası oyuncu ile imleç arasındaki orta noktaya yumuşakça kayar.
-* Ekran sınır sınırlaması geçici olarak gevşetilerek bir sonraki odadaki tehditler önceden keşfedilebilir.
+* Ekran sınırı sınırlaması geçici olarak gevşetilerek bir sonraki odadaki tehditler önceden keşfedilebilir.
 
 ### 3. Yakın Dövüş, Sersemletme ve İnfaz (Finisher)
 * **Yumruk:** Silahsızken sol tık ile sırayla sağ ve sol yumruk atılır. İsabet alan düşman savrulur, silahını yere düşürür ve `1.5` saniye sersem kalır.
@@ -68,6 +57,22 @@ Oyuncunun bacakları dünya ekseninde `WASD` yönünde koşarken, üst gövde fa
 ### 5. Akıllı Çevre ve Etkileşim
 * **Fiziksel Kapılar:** Kapıya çarparak açtığınızda motor hızıyla savrulan kapı kanadı arkasındaki düşmanları ezer ve sersemletir.
 * **Sensörlü Lambalar:** Görüş hattı ve canlı varlık algılayan akıllı lambalar, odaya biri girdiğinde yanar, çıktığında gecikmeli olarak söner.
+
+---
+
+## 🕹️ Kontroller
+
+| Tuş | Eylem | Açıklama |
+| :--- | :--- | :--- |
+| **W, A, S, D** | Hareket | Oyuncunun bacaklarını hareket ettirir |
+| **Fare Hareketi** | Nişan Alma | Gövdeyi ve sanal imleci (`VirtualCursor`) yönlendirir |
+| **Sol Tık** | Ateş / Yumruk | Silah varsa ateş eder, yoksa sırayla sağ/sol yumruk atar |
+| **Sağ Tık** | Fırlat / Al | Silah varsa fırlatır (sersemletir), yoksa yerdeki silahı alır |
+| **Space (Boşluk)** | İnfaz Hazırlığı | Sersemlemiş düşmanın üstüne kilitlenir (Stamina tam ise) |
+| **Sol Tık (İnfazda)**| İnfazı Gerçekleştir| Düşmanın kemiklerini kırarak anında yok eder |
+| **Sol / Sağ Shift** | İleriye Bakış | Kamerayı ve imleci ileri kaydırarak keşif yapmayı sağlar |
+| **R** | Hızlı Yeniden Başlat | Ölüm durumunda mevcut seviyeyi baştan başlatır |
+| **ESC** | Duraklat / Menü | Pause menüsünü açar/kapatır |
 
 ---
 
@@ -102,6 +107,21 @@ Oyun içi `DifficultyManager` ile dengelenen üç farklı zorluk modu:
 
 ---
 
+## 📚 Dokümantasyon (Proje Belgeleri)
+
+Projenin tüm detaylı teknik, tasarımsal ve mimari dokümanları repository içerisindeki [`Docs/`](Docs/) klasörü altında tutulmaktadır:
+
+* 📄 **[GDD.md](Docs/GDD.md) — Oyun Tasarım Dokümanı (Game Design Document):**
+  Oyunun vizyonu, felsefesi, çekirdek döngüsü, tüm silah balistikleri, yapay zeka durum makinesi şeması, seviye mekanikleri ve zorluk matrisini içerir.
+* 📄 **[CONTEXT.md](Docs/CONTEXT.md) — Proje Bağlamı ve Teknik Mimari:**
+  Unity 6 URP 2D ayarları, Additive sahne mimarisi (`CoreScene` + `Level_X`), nesne havuzları (`BulletPool`, `EffectPool`), katman matriksleri (13 Physics, 13 Sorting Layer) ve script envanteri.
+* 📄 **[CODE_STYLE.md](Docs/CODE_STYLE.md) — Kodlama Standartları ve Prensipleri:**
+  C# ve Unity clean architecture ilkeleri, isimlendirme kuralları, serileştirme prensipleri, yaşam döngüsü kuralları ve performans yönergeleri.
+* 📄 **[GEMINI.md](Docs/GEMINI.md) — AI Asistan & LLM Yönergesi:**
+  Proje üzerinde çalışacak yapay zeka modelleri için sistem talimatları, Unity MCP kullanım rehberi ve yeni silah/düşman/bölüm ekleme kontrol listeleri.
+
+---
+
 ## 🏗️ Teknik Mimari ve Dosya Yapısı
 
 * **Additive Sahne Düzeni:** `CoreScene` kalıcıdır (Kamera, Player, UI, Singleton yöneticileri). `Level_1`, `Level_2` ve `Level_3` additive olarak yüklenir ve seviye bitince bellekten atılır.
@@ -109,19 +129,19 @@ Oyun içi `DifficultyManager` ile dengelenen üç farklı zorluk modu:
 * **Kesintisiz Çarpışma (CCD):** Hızlı mermiler için `Physics2D.LinecastAll` kontrolü.
 
 ```
-Assets/
-├── Animations/           # Oyuncu, düşman ve silah animasyon kontrolcüleri
-├── Audio/                # MainMixer, ortam müzikleri, ateş ve infaz sesleri
-├── Prefabs/              # Silahlar, düşmanlar, kapılar, kan efektleri
-├── Scenes/               # CoreScene, MainMenu, Level_1, Level_2, Level_3
-├── Scripts/              # C# mantık ve mimari sınıfları
-│   ├── Enemy/            # EnemyController, PlayerAwarenessController
-│   ├── Environment/      # DoorController, DropPistol, ProximityLamp
-│   ├── Menus/            # MainMenu, PauseMenu, Settings, Difficulty
-│   ├── Player/           # PlayerController, Weapon
-│   ├── Pools/            # BulletPool, EffectPool
-│   └── UI/               # AmmoUI, FinisherUI, LevelObjectiveUI
-└── Sprites/              # Retro pixel-art karakter, çevre ve silah kaplamaları
+PAYOUT/
+├── Assets/
+│   ├── Animations/           # Oyuncu, düşman ve silah animasyon kontrolcüleri
+│   ├── Audio/                # MainMixer, ortam müzikleri, ateş ve infaz sesleri
+│   ├── Prefabs/              # Silahlar, düşmanlar, kapılar, kan efektleri
+│   ├── Scenes/               # CoreScene, MainMenu, Level_1, Level_2, Level_3
+│   ├── Scripts/              # C# mantık ve mimari sınıfları
+│   └── Sprites/              # Retro pixel-art karakter, çevre ve silah kaplamaları
+└── Docs/                     # Proje tasarım ve mimari belgeleri
+    ├── CODE_STYLE.md         # Kodlama standartları
+    ├── CONTEXT.md            # Teknik altyapı ve mimari bağlam
+    ├── GDD.md                # Kapsamlı oyun tasarım dokümanı
+    └── GEMINI.md             # AI asistan ve geliştirici yönergesi
 ```
 
 ---
@@ -140,18 +160,6 @@ Assets/
 4. **Oyunu Başlatın:**
    * `Assets/Scenes/MainMenu.unity` sahnesini açıp **Play** butonuna basın.
    * Doğrudan seviye test etmek için `Assets/Scenes/CoreScene.unity` sahnesinden başlatabilirsiniz.
-
----
-
-## 📌 GitHub Repository Bilgileri (About & Topics)
-
-GitHub sayfasındaki repository ayarlarını düzenlemek için önerilen hazır metinler:
-
-* **Description (About Kutusu):**
-  > Fast-paced, high-lethality 2D pixelated top-down shooter built with Unity 6 URP. Features Hotline Miami-inspired combat, decoupled movement, weapon throwing, brutal finishers, and reactive 2D NavMesh AI.
-
-* **Topics / Etiketler:**
-  `unity` `unity6` `pixel-art` `top-down-shooter` `hotline-miami-inspired` `csharp` `urp-2d` `game-development` `navmesh-2d` `indie-game` `action-game`
 
 ---
 
